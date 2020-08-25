@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Prevent the demo from appearing in search engines -->
+    <meta name="robots" content="noindex">
+
+    <!-- Simplebar -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/vendor/simplebar.min.css' %}" rel="stylesheet">
+
+    <!-- App CSS -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/app.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/app.rtl.css' %}" rel="stylesheet">
+
+    <!-- Material Design Icons -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-material-icons.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-material-icons.rtl.css' %}" rel="stylesheet">
+
+    <!-- Font Awesome FREE Icons -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-fontawesome-free.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-fontawesome-free.rtl.css' %}" rel="stylesheet">
+
+    <!-- ion Range Slider -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-ion-rangeslider.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-ion-rangeslider.rtl.css' %}" rel="stylesheet">
+
+    <!-- Toastr -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/vendor/toastr.min.css' %}" rel="stylesheet">
+
+    <!-- Flatpickr -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-flatpickr.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-flatpickr.rtl.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-flatpickr-airbnb.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-flatpickr-airbnb.rtl.css' %}" rel="stylesheet">
+
+
+    <!-- Vector Maps -->
+    <link type="text/css" href="{% static 'dashboard/admin/assets/vendor/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
+    <link type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <style>
+        .btn-success-space {
+            margin-right: 5px !important;
+        }
+        .btn-success{
+            background-color: #4BB543 !important;
+            color: white !important;
+            border-color: #4BB543 !important;
+        }
+        .badge-success{
+            background-color: #4BB543 !important;
+            color: white !important;
+        }
+        .btn-warning{
+            color: white !important;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
+
+
+
+</head>
+
+<body class="layout-default">
+    <div class="preloader"></div>
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+                <!-- Header -->
+                <div id="header" class="mdk-header js-mdk-header m-0" data-fixed data-effects="waterfall" data-retarget-mouse-scroll="false">
+                    <div class="mdk-header__content">
+                        <div class="navbar navbar-expand-sm navbar-main navbar-light bg-white  pr-0" id="navbar" data-primary>
+                            <div class="container-fluid p-0">
+                                <!-- Navbar toggler -->
+                                <button class="navbar-toggler navbar-toggler-custom d-lg-none d-flex mr-navbar" type="button" data-toggle="sidebar">
+                                    <span class="material-icons">short_text</span>
+                                </button>
+                                <!-- Navbar Brand -->
+                                <a href="{% url 'sample_app:home' %}" class="navbar-brand flex">
+                                    <span>{% block subtitle %}{% endblock %}</span>
+                                </a>
+                                <!-- breadcrumb -->
+                                <div class="nav-breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'sample_app:home' %}">Home</a></li>
+                                        {% block breadcrumb %}
+                                        {% endblock %}
+                                    </ol>
+                                </div>
+                                <!-- breadcrumb -->
+                              
+                                <div class="dropdown">
+                                    <a href="#" data-toggle="dropdown" data-caret="false" class="dropdown-toggle navbar-toggler navbar-toggler-company border-left d-flex align-items-center ml-navbar">
+                                        <span class="rounded-circle">
+                                            <span class="material-icons">business</span>
+                                        </span>
+                                    </a>
+                                    <div id="company_menu" class="dropdown-menu dropdown-menu-right navbar-company-menu">
+                                        <div class="dropdown-item d-flex align-items-center py-2 navbar-company-info py-3">
+            
+                                            <span class="mr-3">
+                                                <img src="{% static 'dashboard/admin/assets/images/frontted-logo-blue.svg' %}" width="43" height="43" alt="avatar">
+                                            </span>
+                                            <span class="flex d-flex flex-column">
+                                                
+                                                <strong style="font-size: 1.125rem;"> {% if user.is_superuser %}{{ user }}{% else %}{{ user.first_name }} {{user.last_name}}{% endif %}</strong>
+                                                {% comment %}
+                                                <small class="text-muted text-uppercase">8 Users</small>
+                                                {% endcomment %}
+                                            </span>
+            
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'sample_app:logout' %}">
+                                            <span class="material-icons mr-2">exit_to_app</span> Logout
+                                        </a>
+                                       
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- // END Header -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <!-- edit -->
+                    <div class="container-fluid">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+                <!-- // END header-layout__content -->
+            </div>
+            <!-- // END header-layout -->
+        </div>
+        <!-- // END drawer-layout__content -->
+        {% include 'dashboard/layouts/menu.html' %}
+       
+    </div>
+    <!-- // END drawer-layout -->
+   
+    {% block modal %}
+    {% endblock %}
+    
+    <div class="modal fade" id="dynamicDeleteModal" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form class="form" action="" method="POST">{% csrf_token %}
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Confirm" class="btn btn-danger">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'dashboard/admin/assets/vendor/jquery.min.js' %}"></script>
+
+    <!-- jQuery -->
+
+    <!-- Bootstrap -->
+    <script src="{% static 'dashboard/admin/assets/vendor/popper.min.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/vendor/bootstrap.min.js' %}"></script>
+
+    <!-- Simplebar -->
+    <script src="{% static 'dashboard/admin/assets/vendor/simplebar.min.js' %}"></script>
+
+    <!-- DOM Factory -->
+    <script src="{% static 'dashboard/admin/assets/vendor/dom-factory.js' %}"></script>
+
+    <!-- MDK -->
+    <script src="{% static 'dashboard/admin/assets/vendor/material-design-kit.js' %}"></script>
+
+    <!-- Range Slider -->
+    <script src="{% static 'dashboard/admin/assets/vendor/ion.rangeSlider.min.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/js/ion-rangeslider.js' %}"></script>
+
+    <!-- App -->
+    <script src="{% static 'dashboard/admin/assets/js/toggle-check-all.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/js/check-selected-row.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/js/dropdown.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/js/sidebar-mini.js' %}"></script>
+    <script src="{% static 'dashboard/admin/assets/js/app.js' %}"></script>
+
+    <!-- App Settings (safe to remove) -->
+    <script src="{% static 'dashboard/admin/assets/js/app-settings.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+    <!-- Flatpickr -->
+    <script src="{% static 'dashboard/admin/assets/vendor/flatpickr/flatpickr.min.js' %} "></script>
+    <script src="{% static 'dashboard/admin/assets/js/flatpickr.js' %} "></script>
+
+    <!-- Global Settings -->
+    <script src="{% static 'dashboard/admin/assets/js/settings.js' %} "></script>
+
+    <!-- Chart.js -->
+    {% comment %}
+    <script src="{% static 'dashboard/admin/assets/vendor/Chart.min.js' %}"></script>
+   
+
+    <!-- App Charts JS -->
+    <script src="{% static 'dashboard/admin/assets/js/chartjs-rounded-bar.js' %} "></script>
+    <script src="{% static 'dashboard/admin/assets/js/charts.js' %} "></script>
+    <script src="{% static 'dashboard/admin/assets/js/page.dashboard.js' %} "></script>
+    {% endcomment %}
+
+    <!-- Vector Maps -->
+    <script src="{% static 'dashboard/admin/assets/vendor/jqvmap/jquery.vmap.min.js' %} "></script>
+    <script src="{% static 'dashboard/admin/assets/vendor/jqvmap/maps/jquery.vmap.world.js' %} "></script>
+    <script src="{% static 'dashboard/admin/assets/js/vector-maps.js' %} "></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!-- Chart Samples -->
+
+    <!-- Toastr -->
+    <script src="{% static 'dashboard/admin/assets/vendor/toastr.min.js' %}"></script>
+    <script>
+        $('.delete-link').click(function(event){
+            event.preventDefault();
+            $("#dynamicDeleteModal").modal('show');
+            $("#dynamicDeleteModal").find('form').attr('action', $(this).attr('href'));
+        });
+       
+        // toastr
+        toastr.options = { "debug": false, "newestOnTop": false, "positionClass": "toast-top-right", "closeButton": true, "timeOut": "5000", "progressBar": false };
+            {% for message in messages %}
+                {% if message.level == 20 %}
+                    toastr.info("{{ message }}");   
+                {% elif message.level == 25 %}
+                    toastr.success("{{ message }}");        
+                {% elif message.level == 30 %}
+                    toastr.warning("{{ message }}");        
+                {% elif message.level == 40 %}
+                    toastr.error("{{ message }}");
+                {% endif %}     
+            {% endfor %}
+    </script>
+
+    {% block script %}
+    {% endblock %}
+
+</body>
+
+</html>
