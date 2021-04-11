@@ -17,7 +17,7 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
 			return super().dispatch(request, *args, **kwargs)
 		return self.handle_no_permission()
 
-class DeleteMixin(DeleteView):
+class GetDeleteMixin(DeleteView):
 	def get(self, request, *args, **kwargs):
 		return super().post(request, *args, **kwargs)
 

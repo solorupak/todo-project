@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import PasswordResetForm
 from django.utils.html import mark_safe
 
-from .models import *
+from .models import User, Designation
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -60,12 +60,20 @@ class SignUpForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-	username = forms.CharField(
-		widget=forms.TextInput(
-			attrs={'class': 'form-control', 'placeholder':  'Username'}))
-	password = forms.CharField(
-		widget=forms.PasswordInput(
-			attrs={'class': 'form-control', 'placeholder':  'Password'}))
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder':  'Username'}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder':  'Password'}))
+
+    def clean(self):
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = User.objects.filter(username=username, is_active=True).first()
+        if user == None or not user.check_password(password):
+            raise forms.ValidationError({'password':"Incorrect username or password"})
+        return self.cleaned_data
 
 
 class DesignationForm(forms.ModelForm):
@@ -79,13 +87,3 @@ class DesignationForm(forms.ModelForm):
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update(
                 {'class': 'form-control'})
-
-
-class DesignationDeleteForm(forms.ModelForm):
-    
-    class Meta:
-        model = Designation 
-        fields = ['deleted_at']
-        widgets = {
-        'deleted_at': forms.HiddenInput(),
-        }

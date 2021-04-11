@@ -40,6 +40,14 @@
     <link type="text/css" href="{% static 'dashboard/admin/assets/css/vendor-flatpickr-airbnb.rtl.css' %}" rel="stylesheet">
 
 
+    <!-- Select2 -->
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css "
+        rel="stylesheet">
+    
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.css">
+
+
     <!-- Vector Maps -->
     <link type="text/css" href="{% static 'dashboard/admin/assets/vendor/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
     <link type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -147,7 +155,7 @@
             <!-- // END header-layout -->
         </div>
         <!-- // END drawer-layout__content -->
-        {% include 'dashboard/layouts/menu.html' %}
+        {% include 'dashboard/layouts/sidebar.html' %}
        
     </div>
     <!-- // END drawer-layout -->
@@ -231,31 +239,55 @@
     <script src="{% static 'dashboard/admin/assets/vendor/jqvmap/maps/jquery.vmap.world.js' %} "></script>
     <script src="{% static 'dashboard/admin/assets/js/vector-maps.js' %} "></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- Chart Samples -->
+
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.js"></script>
 
     <!-- Toastr -->
     <script src="{% static 'dashboard/admin/assets/vendor/toastr.min.js' %}"></script>
+    
     <script>
         $('.delete-link').click(function(event){
             event.preventDefault();
             $("#dynamicDeleteModal").modal('show');
             $("#dynamicDeleteModal").find('form').attr('action', $(this).attr('href'));
         });
+
+        // Select2
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
        
-        // toastr
-        toastr.options = { "debug": false, "newestOnTop": false, "positionClass": "toast-top-right", "closeButton": true, "timeOut": "5000", "progressBar": false };
-            {% for message in messages %}
-                {% if message.level == 20 %}
-                    toastr.info("{{ message }}");   
-                {% elif message.level == 25 %}
-                    toastr.success("{{ message }}");        
-                {% elif message.level == 30 %}
-                    toastr.warning("{{ message }}");        
-                {% elif message.level == 40 %}
-                    toastr.error("{{ message }}");
-                {% endif %}     
-            {% endfor %}
+       
     </script>
+
+    <script>
+        // Sweet alert
+        {% for message in messages %}
+        {% if message.level == 20 %}
+            var swal_type = 'info';	
+        {% elif message.level == 25 %}
+            var swal_type = 'success';			
+        {% elif message.level == 30 %}
+            var swal_type = 'warning';		
+        {% elif message.level == 40 %}
+            var swal_type = 'error';	
+        {% endif %}	
+
+        Swal.fire({
+            position: 'top-end',
+            type: swal_type,
+            title: '{{ message }}',
+            showConfirmButton: false,
+            timer: 2000,
+        })
+        {% endfor %}
+    </script>
+
+
 
     {% block script %}
     {% endblock %}
