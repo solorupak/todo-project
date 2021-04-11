@@ -1,40 +1,39 @@
-import json
-import subprocess
-
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
+
 from .forms import LoginForm, SignUpForm, DesignationForm
-from .mixins import BaseMixin, CustomLoginRequiredMixin, GetDeleteMixin
+from .mixins import BaseMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin
 from .models import Designation 
 
+User = get_user_model()
 
 class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
-    template_name = 'dashboard/base/home.html'
+    template_name = 'dashboard/index.html'
 
-class SignupPage(BaseMixin, CreateView):
-    template_name = 'dashboard/layouts/signup.html'
+# Registration
+class SignupView(BaseMixin, NonLoginRequiredMixin, CreateView):
     form_class = SignUpForm
-    success_url = reverse_lazy('edu:home')
+    success_url = reverse_lazy('dashboard:index')
+    template_name = 'dashboard/auth/signup.html'
 
     def form_valid(self, form):
-        username = form.cleaned_data.get('username')
-        name = form.cleaned_data.get('name')
-        position =form.cleaned_data.get('position')
-        level = form.cleaned_data.get('level')
-        email = form.cleaned_data.get('email')
-        user = Candidate.objects.create(username=username, name=name, position=position, level=level, email = email)
+        # saving user
+        user = User.objects.create(
+            username=form.cleaned_data.get('username'), 
+            first_name=form.cleaned_data.get('first_name'), 
+            last_name=form.cleaned_data.get('last_name'), 
+            email = form.cleaned_data.get('username')
+        )
         user.set_password(form.cleaned_data.get('password'))
-        user.ip_address = get_ip(self.request)
         user.save()
-        user = authenticate(username=username, password=form.cleaned_data.get('password'))
+
+        # logging in user after registration
         login(self.request, user)
-        return HttpResponseRedirect('/exam/list/')
-    
+        return redirect(self.success_url)
 
     def form_invalid(self,form):
         print("form invalid")
@@ -42,12 +41,11 @@ class SignupPage(BaseMixin, CreateView):
             return JsonResponse({'errors':form.errors},status=400)
         return super().form_invalid(form)
 
-#Login Logout Views
 
-class LoginPageView(FormView):
-    template_name = "dashboard/auth/login.html"
+# Login Logout Views
+class LoginPageView(NonLoginRequiredMixin, FormView):
     form_class = LoginForm
-
+    template_name = "dashboard/auth/login.html"
 
     def form_valid(self, form):
         username = form.cleaned_data['username']
@@ -56,77 +54,36 @@ class LoginPageView(FormView):
         login(self.request, user)
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
-        return redirect('dashboard:home')
+        return redirect('dashboard:index')
         
-
 class LogoutView(View):
-
-	def get(self, request):
+	def get(self, request, *args, **kwargs):
 		logout(request)
 		return redirect('dashboard:login')
 
 
-#Designation CRUD
-class DesignationListView(CustomLoginRequiredMixin,ListView):
+# Designation CRUD
+class DesignationListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListView):
     model = Designation
     template_name = "dashboard/designations/list.html"
-    context_object_name = "object_list"
-    # queryset = Designation.objects.filter(deleted_at__isnull=True).order_by('-created_at')
 
     def get_querset(self):
-        return super().get_queryset(deleted_at__isnull=True).order_by('-created_at')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
+        return super().get_queryset().order_by('-created_at')
 
 class DesignationCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
-    template_name = "dashboard/designations/form.html"
     form_class= DesignationForm
-    model = Designation
-    success_url = reverse_lazy('dashboard:designations-list')
     success_message = "Designation Created Successfully"
-
-    def get_querset(self):
-        return super().get_queryset(deleted_at__isnull=True).order_by('-created_at')
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    
-    def form_valid(self, form):
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        return super().form_valid(form)
-
-
-class DesignationUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    success_url = reverse_lazy('dashboard:designations-list')
     template_name = "dashboard/designations/form.html"
-    model = Designation
+
+class DesignationUpdateView(CustomLoginRequiredMixin, NonDeletedListMixin, SuccessMessageMixin, UpdateView):
     form_class = DesignationForm
-    success_url = reverse_lazy('dashboard:designations-list')
-    success_message = "Designation Updated Successfully"
-
-    def get_querset(self):
-        return super().get_queryset(deleted_at__isnull=True).order_by('-created_at')
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    
-    def form_valid(self, form):
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        return super().form_valid(form)
-
-
-class DesignationDeleteView(CustomLoginRequiredMixin,SuccessMessageMixin, GetDeleteMixin):
     model = Designation
+    success_message = "Designation Updated Successfully"
     success_url = reverse_lazy('dashboard:designations-list')
-    success_message = "Designation Deleted Successfully"
+    template_name = "dashboard/designations/form.html"
 
-    def get_querset(self):
-        return super().get_queryset(deleted_at__isnull=True).order_by('-created_at')
+class DesignationDeleteView(CustomLoginRequiredMixin, NonDeletedListMixin, SuccessMessageMixin, GetDeleteMixin):
+    model = Designation
+    success_message = "Designation Deleted Successfully"
+    success_url = reverse_lazy('dashboard:designations-list')

@@ -7,9 +7,9 @@ from .models import User, Designation
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-    'class': 'form-control',
-    'required': 'true',
-    'placeholder': 'Password *'}))
+        'class': 'form-control',
+        'required': 'true',
+        'placeholder': 'Password *'}))
     
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
@@ -26,12 +26,13 @@ class SignUpForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+
         self.fields['first_name'].widget.attrs.update({'placeholder':'First Name'})
         self.fields['last_name'].widget.attrs.update({'placeholder':'Last Name'})
         self.fields['username'].widget.attrs.update({'placeholder':'Username'})
-        self.fields['email'].label="Email"
-        self.fields['password'].label="Password"
-        self.fields['confirm_password'].label="Confirm Password"
+        self.fields['email'].label = "Email"
+        self.fields['password'].label = "Password"
+        self.fields['confirm_password'].label = "Confirm Password"
 
 
 
