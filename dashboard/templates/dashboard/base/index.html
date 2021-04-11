@@ -90,8 +90,6 @@
     {% block style %}
     {% endblock %}
 
-
-
 </head>
 
 <body class="layout-default">
@@ -145,6 +143,8 @@
             
                                         </div>
                                         <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'dashboard:change-password' %}">
+                                            <span class="material-icons mr-2">lock</span> Change Password
                                         <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'dashboard:logout' %}">
                                             <span class="material-icons mr-2">exit_to_app</span> Logout
                                         </a>

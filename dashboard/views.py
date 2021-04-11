@@ -5,7 +5,7 @@ from django.urls import resolve, reverse, reverse_lazy
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
 
-from .forms import LoginForm, SignUpForm, DesignationForm
+from .forms import LoginForm, SignUpForm, DesignationForm, PasswordResetForm
 from .mixins import BaseMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin
 from .models import Designation 
 
@@ -64,6 +64,26 @@ class LogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect('dashboard:login')
+
+# Password Reset
+class ChangePasswordView(CustomLoginRequiredMixin, FormView):
+    form_class = PasswordResetForm
+    template_name = "dashboard/auth/reset_password.html"
+    success_message = "Password Has Been Changed"
+    success_url = reverse_lazy('dashboard:index')
+
+    def get_form(self):
+        form = super().get_form()
+        form.set_user(self.request.user)
+        return form
+
+    def form_valid(self, form):
+        password = form.cleaned_data['password']
+        account = User.objects.filter(username=self.request.user).first()
+        account.set_password(form.cleaned_data['password'])
+        user = authenticate(username=self.request.user, password=password)
+        login(self.request, user)
+        return super().form_valid(form)
 
 
 # Designation CRUD
