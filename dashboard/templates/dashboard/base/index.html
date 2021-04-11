@@ -86,6 +86,45 @@
             font-weight: 500;
         }
     </style>
+    
+    <style>
+        table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:after {
+            opacity: 1;
+            top: 3px !important;
+        }
+        table.dataTable thead .sorting_asc:after{
+            right: 0.5em;
+            top: 3px;
+            content: "\2193";
+        }
+        table.dataTable thead .sorting:before{
+            top: 3px;
+        }
+        table.dataTable thead .sorting:after{
+            top: 3px;
+        }
+    </style>
+    
+    <style>
+        .select2-search__field{
+            outline: none;
+        }
+        .form-control select2 select2-hidden-accessible{
+            outline: none !important;
+        }
+    
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #EEEEEE;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+    
+        }   
+        .select2-container *:focus {
+            outline: none;
+            border-color: #299aff;
+        }
+    </style>
 
     {% block style %}
     {% endblock %}

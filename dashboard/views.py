@@ -68,7 +68,7 @@ class LogoutView(View):
 # Password Reset
 class ChangePasswordView(CustomLoginRequiredMixin, FormView):
     form_class = PasswordResetForm
-    template_name = "dashboard/auth/reset_password.html"
+    template_name = "dashboard/auth/change_password.html"
     success_message = "Password Has Been Changed"
     success_url = reverse_lazy('dashboard:index')
 
