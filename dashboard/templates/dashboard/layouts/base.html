@@ -86,7 +86,23 @@
             font-weight: 500;
         }
     </style>
-
+    <style>
+    table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:after {
+        opacity: 1;
+        top: 3px !important;
+    }
+    table.dataTable thead .sorting_asc:after{
+        right: 0.5em;
+        top: 3px;
+        content: "\2193";
+    }
+    table.dataTable thead .sorting:before{
+        top: 3px;
+    }
+    table.dataTable thead .sorting:after{
+        top: 3px;
+    }
+    </style>
     {% block style %}
     {% endblock %}
 

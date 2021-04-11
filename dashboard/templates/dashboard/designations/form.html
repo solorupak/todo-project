@@ -7,13 +7,34 @@
 {% block head %}
 
 {% endblock %} 
+{% block style %}
+<style>
+    .select2-search__field{
+        outline: none;
+    }
+    .form-control select2 select2-hidden-accessible{
+        outline: none !important;
+    }
 
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: 1px solid #EEEEEE;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+
+    }   
+    .select2-container *:focus {
+        outline: none;
+        border-color: #299aff;
+    }
+</style>
+{% endblock style %}
 {% block content %}
 <div class="container-fluid page__container">
     <div class="card card-form form-header-layout">
-        <h1>Form</h1>
-        <div class="row no-gutters">
-            <div class="col-lg-12 card-form__body card-body pomelo-form-card">
+        <h1 style="padding: 27px !important;">Form</h1>
+        <div class="row no-gutters" style="border-top: 1px solid #EFEFEF">
+            <div class="col-lg-12 card-form__body card-body pomelo-form-card" style="background:none !important;">
                 <form method="post" action="" enctype="multipart/form-data" autocomplete="off">
                     {% csrf_token %}
                     {% for field in form %}
