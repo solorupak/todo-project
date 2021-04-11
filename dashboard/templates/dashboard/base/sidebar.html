@@ -4,7 +4,7 @@
     <div class="mdk-drawer__content">
         <div class="sidebar sidebar-dark sidebar-left simplebar bg-dark" data-simplebar>
             <div class="d-flex align-items-center sidebar-p-a border-bottom sidebar-account flex-shrink-0">
-                <a href="{% url 'sample_app:home' %}" class="flex d-flex align-items-center text-underline-0 text-body">
+                <a href="{% url 'dashboard:index' %}" class="flex d-flex align-items-center text-underline-0 text-body">
                     <span class="flex d-flex flex-column">
                         <img src="{% static 'dashboard/admin/assets/images/logo-1.png' %}" width="80" height="50" alt="avatar">
                     </span>
@@ -22,7 +22,7 @@
                         </div>
                        
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'sample_app:logout' %}">Logout</a>
+                        <a class="dropdown-item" href="{% url 'dashboard:logout' %}">Logout</a>
                     </div>
                 </div>
             </div>
@@ -31,15 +31,40 @@
             <div class="">
                 <div >
                     <ul class="sidebar-menu flex">
-                        {% if user.is_superuser or user.groups.all.0.name == 'ChiefEditor' %}
+
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:index' %}">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dashboard</i>
+                                <span class="sidebar-menu-text"> Dashboard </span>
+                            </a>
+                        </li>
                     
                         <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="{% url 'sample_app:designation-list' %}">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:designations-list' %}">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">supervisor_account</i>
                                 <span class="sidebar-menu-text"> Designation </span>
                             </a>
                         </li>
-                        {% endif %}
+
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#employee_menu">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">settings</i>
+                                <span class="sidebar-menu-text">Dropdown</span>
+                                <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="employee_menu">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="">
+                                        <span class="sidebar-menu-text">Dropdown 1</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="">
+                                        <span class="sidebar-menu-text">Dropdown 2</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     </ul>
                 </div>
@@ -47,7 +72,7 @@
 
             <div class="mt-auto sidebar-p-a sidebar-b-t d-flex flex-column flex-shrink-0">
               
-                <a class="sidebar-link" href="{% url 'sample_app:logout' %}">
+                <a class="sidebar-link" href="{% url 'dashboard:logout' %}">
                     Logout
                     <i class="sidebar-menu-icon ml-2 material-icons icon-16pt">exit_to_app</i>
                 </a>

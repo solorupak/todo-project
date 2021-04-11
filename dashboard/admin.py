@@ -6,7 +6,7 @@ from django.contrib.admin.sites import AlreadyRegistered
 from django.contrib.sessions.models import Session
 
 
-app_models = apps.get_app_config('sample_app').get_models()
+app_models = apps.get_app_config('dashboard').get_models()
 for model in app_models:
     try:
         admin.site.register(model)
