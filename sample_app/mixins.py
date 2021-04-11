@@ -19,6 +19,9 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
 
 class GetDeleteMixin(DeleteView):
 	def get(self, request, *args, **kwargs):
+		if hasattr(self, 'success_message'):
+			print('ayo')
+			messages.success('asdfasd')
 		return super().post(request, *args, **kwargs)
 
 class BaseMixin():

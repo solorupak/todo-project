@@ -72,7 +72,7 @@ class LoginForm(forms.Form):
         password = self.cleaned_data['password']
         user = User.objects.filter(username=username, is_active=True).first()
         if user == None or not user.check_password(password):
-            raise forms.ValidationError({'password':"Incorrect username or password"})
+            raise forms.ValidationError({"Incorrect username or password"})
         return self.cleaned_data
 
 
@@ -80,7 +80,7 @@ class DesignationForm(forms.ModelForm):
 
     class Meta:
         model = Designation
-        fields = ['name','position']
+        fields = ['name','position', 'gender', 'date_of_birth']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -24,8 +24,14 @@ class DateTimeModel(models.Model):
 
 
 class Designation(DateTimeModel):
-    name = models.CharField(max_length=100)
-    position = models.CharField(max_length=140)
+    name = models.CharField(max_length=255)
+    position = models.CharField(max_length=255)
+    gender = models.CharField(max_length=255, choices=(
+        ('FEMALE', 'FEMALE'),
+        ('MALE', 'MALE'),
+        ('OTHERS', 'OTHERS')
+    ))
+    date_of_birth = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
