@@ -1,4 +1,4 @@
-{% extends "dashboard/layouts/base.html" %}
+{% extends "dashboard/base/index.html" %}
 
 {% load static %}
 
@@ -41,7 +41,7 @@
                     <div class="form-group" >
                         <label>{{ field.label }}{% if field.field.required %}* {% endif %}</label>
                         {{ field }}
-                        <span style="color:red;">{{ field.errors }}</span>
+                        <span style="color:red;">{{ field.errors|striptags|safe }}</span>
                     </div>
                     {% endfor %}                                       
                     <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>

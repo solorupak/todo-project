@@ -126,13 +126,13 @@
                                     <span class="material-icons">short_text</span>
                                 </button>
                                 <!-- Navbar Brand -->
-                                <a href="{% url 'dashboard:home' %}" class="navbar-brand flex">
+                                <a href="{% url 'dashboard:index' %}" class="navbar-brand flex">
                                     <span>{% block subtitle %}{% endblock %}</span>
                                 </a>
                                 <!-- breadcrumb -->
                                 <div class="nav-breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'dashboard:home' %}">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">Home</a></li>
                                         {% block breadcrumb %}
                                         {% endblock %}
                                     </ol>
@@ -187,7 +187,7 @@
             <!-- // END header-layout -->
         </div>
         <!-- // END drawer-layout__content -->
-        {% include 'dashboard/layouts/sidebar.html' %}
+        {% include 'dashboard/base/sidebar.html' %}
        
     </div>
     <!-- // END drawer-layout -->
@@ -195,28 +195,9 @@
     {% block modal %}
     {% endblock %}
     
-    <div class="modal fade" id="dynamicDeleteModal" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Delete</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <form class="form" action="" method="POST">{% csrf_token %}
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete ?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="submit" value="Confirm" class="btn btn-danger">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
+  
     <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <!-- Bootstrap -->
     <script src="{% static 'dashboard/admin/assets/vendor/popper.min.js' %}"></script>
@@ -264,13 +245,6 @@
     <!-- Datatables -->
     <script type="text/javascript" src="{% static 'dashboard/admin/assets/js/datatables.min.js' %}"></script>
 
-    <script>
-        $('.delete-link').click(function(event){
-            event.preventDefault();
-            $("#dynamicDeleteModal").modal('show');
-            $("#dynamicDeleteModal").find('form').attr('action', $(this).attr('href'));
-        });
-    </script>
 
     <script>
         // Sweet alert
@@ -333,7 +307,7 @@
         });
 
         // delete link
-		$('body').on('click', '.a-delete', function (e) {
+		$('body').on('click', '.delete-link', function (e) {
 			e.preventDefault();
 			Swal.fire({
 				title: 'Are you sure?',

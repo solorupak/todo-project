@@ -4,7 +4,7 @@
     <div class="mdk-drawer__content">
         <div class="sidebar sidebar-dark sidebar-left simplebar bg-dark" data-simplebar>
             <div class="d-flex align-items-center sidebar-p-a border-bottom sidebar-account flex-shrink-0">
-                <a href="{% url 'dashboard:home' %}" class="flex d-flex align-items-center text-underline-0 text-body">
+                <a href="{% url 'dashboard:index' %}" class="flex d-flex align-items-center text-underline-0 text-body">
                     <span class="flex d-flex flex-column">
                         <img src="{% static 'dashboard/admin/assets/images/logo-1.png' %}" width="80" height="50" alt="avatar">
                     </span>
@@ -31,10 +31,16 @@
             <div class="">
                 <div >
                     <ul class="sidebar-menu flex">
-                        {% if user.is_superuser or user.groups.all.0.name == 'ChiefEditor' %}
+
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:index' %}">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dashboard</i>
+                                <span class="sidebar-menu-text"> Dashboard </span>
+                            </a>
+                        </li>
                     
                         <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="{% url 'dashboard:designation-list' %}">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:designations-list' %}">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">supervisor_account</i>
                                 <span class="sidebar-menu-text"> Designation </span>
                             </a>
@@ -59,8 +65,6 @@
                                 </li>
                             </ul>
                         </li>
-
-                        {% endif %}
 
                     </ul>
                 </div>

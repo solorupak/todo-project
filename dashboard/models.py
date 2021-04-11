@@ -38,6 +38,5 @@ class Designation(DateTimeModel):
         verbose_name = 'designation'
         verbose_name_plural = 'designations' 
 
-
     def __str__(self):
         return self.name

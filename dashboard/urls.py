@@ -1,16 +1,18 @@
 from django.urls import path
-from .views import *
+from . import views
 
 app_name = 'dashboard'
 
 urlpatterns=[       
-        path('', DashboardView.as_view(), name='home'),
-        path('signup/', SignupPage.as_view(), name='signup'),
-        path('accounts/login/', LoginPageView.as_view(), name='login'),
-        path('logout/', LogoutView.as_view(), name='logout'),
+        path('', views.DashboardView.as_view(), name='index'),
+        
+        # accounts
+        path('accounts/signup/', views.SignupView.as_view(), name='signup'),
+        path('accounts/login/', views.LoginPageView.as_view(), name='login'),
+        path('accounts/logout/', views.LogoutView.as_view(), name='logout'),
 
-        path('designation/',DesignationListView.as_view(), name='designation-list'),
-        path('designation/create/',DesignationCreateView.as_view(), name='designation-create'),
-        path('designation/<int:pk>/update/',DesignationUpdateView.as_view(), name='designation-update'),
-        path('designation/<int:pk>/delete/',DesignationDeleteView.as_view(), name='designation-delete'),
+        path('designations/', views.DesignationListView.as_view(), name='designations-list'),
+        path('designations/create', views.DesignationCreateView.as_view(), name='designations-create'),
+        path('designations/<int:pk>/update', views.DesignationUpdateView.as_view(), name='designations-update'),
+        path('designations/<int:pk>/delete', views.DesignationDeleteView.as_view(), name='designations-delete'),
 ]
