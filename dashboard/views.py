@@ -14,7 +14,7 @@ from .models import Designation
 
 
 class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
-    template_name = 'dashboard/layouts/home.html'
+    template_name = 'dashboard/base/home.html'
 
 class SignupPage(BaseMixin, CreateView):
     template_name = 'dashboard/layouts/signup.html'
@@ -85,7 +85,7 @@ class DesignationCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, Creat
     template_name = "dashboard/designations/form.html"
     form_class= DesignationForm
     model = Designation
-    success_url = reverse_lazy('dashboard:designation-list')
+    success_url = reverse_lazy('dashboard:designations-list')
     success_message = "Designation Created Successfully"
 
     def get_querset(self):
@@ -106,7 +106,7 @@ class DesignationUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, Updat
     template_name = "dashboard/designations/form.html"
     model = Designation
     form_class = DesignationForm
-    success_url = reverse_lazy('dashboard:designation-list')
+    success_url = reverse_lazy('dashboard:designations-list')
     success_message = "Designation Updated Successfully"
 
     def get_querset(self):
@@ -125,7 +125,7 @@ class DesignationUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, Updat
 
 class DesignationDeleteView(CustomLoginRequiredMixin,SuccessMessageMixin, GetDeleteMixin):
     model = Designation
-    success_url = reverse_lazy('dashboard:designation-list')
+    success_url = reverse_lazy('dashboard:designations-list')
     success_message = "Designation Deleted Successfully"
 
     def get_querset(self):

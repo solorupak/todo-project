@@ -18,7 +18,7 @@ class SignUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username','first_name','last_name', 'email', 'password', 'confirm_password')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'confirm_password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -80,7 +80,7 @@ class DesignationForm(forms.ModelForm):
 
     class Meta:
         model = Designation
-        fields = ['name','position', 'gender', 'date_of_birth']
+        fields = ['name', 'position', 'gender', 'date_of_birth']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
