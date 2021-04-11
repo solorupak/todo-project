@@ -28,7 +28,7 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
 	login_url = reverse_lazy('dashboard:login')
 
 	def dispatch(self,request,*args,**kwargs):
-		if self.request.user.is_superuser:
+		if self.request.user.is_superuser or self.request.user.is_active:
 			return super().dispatch(request, *args, **kwargs)
 		return self.handle_no_permission()
 

@@ -36,9 +36,8 @@ class SignupView(BaseMixin, NonLoginRequiredMixin, CreateView):
         return redirect(self.success_url)
 
     def form_invalid(self,form):
-        print("form invalid")
         if self.request.is_ajax():
-            return JsonResponse({'errors':form.errors},status=400)
+            return JsonResponse({'errors':form.errors}, status=400)
         return super().form_invalid(form)
 
 
@@ -51,15 +50,20 @@ class LoginPageView(NonLoginRequiredMixin, FormView):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
+
+        # Remember me
+        if self.request.POST.get('remember', None) == None:
+            self.request.session.set_expiry(0)
+
         login(self.request, user)
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
         return redirect('dashboard:index')
         
 class LogoutView(View):
-	def get(self, request, *args, **kwargs):
-		logout(request)
-		return redirect('dashboard:login')
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('dashboard:login')
 
 
 # Designation CRUD
