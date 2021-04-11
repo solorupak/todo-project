@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login</title>
+    <title>Signup</title>
     <!-- Prevent the demo from appearing in search engines -->
     <meta name="robots" content="noindex">
     <!-- Simplebar -->
@@ -28,11 +28,14 @@
     <link rel="apple-touch-icon" sizes="72x72" href="fav-logo.png">
     <link rel="apple-touch-icon" sizes="114x114" href="fav-logo.png">
     <style>
-        .signup-button a:hover{
+        .errorlist{
+            color:red;
+            list-style-type: none;
+        }
+        .login-button a:hover{
             text-decoration: underline!important;
         }
     </style>
-
 </head>
 
 <body>
@@ -40,76 +43,26 @@
 
         <div class="layout-login-centered-boxed__form login-maxwidth">
             <div class="text-center pomelo-crm-login-logo">
-                <img src="{% static 'dashboard/admin/assets/images/logo-1.png' %}" width="70%" alt="Sample app">
-                <h3>Sample App</h3>
+                <img src="{% static 'dashboard/admin/assets/images/logo-1.png' %}" width="70%" alt="Pomelo sample">
+                <h3>Pomelo Screening</h3>
                 <br>
                 <br>
             </div>
             <div class="card">
                 <div class="login-inner">
-                    {% comment %}
-                    <form action="{% url 'dashboard:login' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label class="text-label" for="email_2">Username:</label>
-                            <div class="input-group input-group-merge">
-                                {{ form.as_p }}
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <span class="far fa-envelope"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="text-label" for="password_2">Password:</label>
-                            <div class="input-group input-group-merge">
-                                {{ loginform.password }}
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <span class="fa fa-key"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="jk-form-login form-group jk-signup-form">
-                            <button type="submit" class="btn  btn-block btn-outline-dark jk-button">LOGIN</button>
-                        </div>
-                        <div class="form-group text-center">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" checked="" id="remember">
-                                <label class="custom-control-label" for="remember">Remember me </label>
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <a href="">Forgot password?</a> <br>
-                            Don't have an account? <a class="text-body text-underline" href="signup.html">Sign up!</a>
-                        </div>
-                    </form>
-                     {% endcomment %}
                      {% if error %}
-                     <span style="color:red;"> {{ error }}</span>
+                     <span style="color:red;!important"> {{ error }}</span>
                      {% endif %}
-                    <form action="{% url 'sample_app:login' %}" method="POST">
+                    <form action="{% url 'dashboard:signup' %}" method="POST">
                         {% csrf_token %}
-                      
                         {{ form.as_p }}
-                        <div class="jk-form-login form-group jk-signup-form">
-                        <button type="submit" class="btn  btn-block btn-outline-dark jk-button">LOGIN</button>
-                        </div>
-                        <div class="form-group text-center mt-4">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" checked="" id="remember">
-                                <label class="custom-control-label" for="remember">Remember me </label>
-                            </div>
-                        </div>
-                        <div class="form-group text-center signup-button">
+                        <button type="submit" class="btn  btn-block btn-outline-dark jk-button">Signup</button>
+                        <div class="form-group text-center login-button">
                             {% comment %}
-                            <a href="{% url 'sample_app:forgot-password' %}">Forgot password?</a> 
-                            <br>
+                            <a href="">Forgot password?</a> 
                             {% endcomment %}
                             <br>
-                            Don't have an account? <a class="text-body text-underline" href="{% url 'sample_app:signup' %}" style="color:#4a90e2!important;">Sign up</a>
+                            Already have an account? <a class="text-body text-underline" href="{% url 'dashboard:login' %}" style="color:#4a90e2!important;">Login</a>
                         </div>
                     </form>
                 </div>

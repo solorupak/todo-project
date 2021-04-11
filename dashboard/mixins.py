@@ -10,7 +10,7 @@ from .models import *
 
 
 class CustomLoginRequiredMixin(LoginRequiredMixin):
-	login_url = reverse_lazy('sample_app:login')
+	login_url = reverse_lazy('dashboard:login')
 
 	def dispatch(self,request,*args,**kwargs):
 		if self.request.user.is_superuser:
@@ -20,8 +20,7 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
 class GetDeleteMixin(DeleteView):
 	def get(self, request, *args, **kwargs):
 		if hasattr(self, 'success_message'):
-			print('ayo')
-			messages.success('asdfasd')
+			messages.success(self.request, self.success_message)
 		return super().post(request, *args, **kwargs)
 
 class BaseMixin():

@@ -56,14 +56,14 @@ class LoginPageView(FormView):
         login(self.request, user)
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
-        return redirect('sample_app:home')
+        return redirect('dashboard:home')
         
 
 class LogoutView(View):
 
 	def get(self, request):
 		logout(request)
-		return redirect('sample_app:login')
+		return redirect('dashboard:login')
 
 
 #Designation CRUD
@@ -85,7 +85,7 @@ class DesignationCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, Creat
     template_name = "dashboard/designations/form.html"
     form_class= DesignationForm
     model = Designation
-    success_url = reverse_lazy('sample_app:designation-list')
+    success_url = reverse_lazy('dashboard:designation-list')
     success_message = "Designation Created Successfully"
 
     def get_querset(self):
@@ -106,7 +106,7 @@ class DesignationUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, Updat
     template_name = "dashboard/designations/form.html"
     model = Designation
     form_class = DesignationForm
-    success_url = reverse_lazy('sample_app:designation-list')
+    success_url = reverse_lazy('dashboard:designation-list')
     success_message = "Designation Updated Successfully"
 
     def get_querset(self):
@@ -125,7 +125,7 @@ class DesignationUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, Updat
 
 class DesignationDeleteView(CustomLoginRequiredMixin,SuccessMessageMixin, GetDeleteMixin):
     model = Designation
-    success_url = reverse_lazy('sample_app:designation-list')
+    success_url = reverse_lazy('dashboard:designation-list')
     success_message = "Designation Deleted Successfully"
 
     def get_querset(self):

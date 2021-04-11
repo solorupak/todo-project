@@ -29,12 +29,14 @@ class Designation(DateTimeModel):
     gender = models.CharField(max_length=255, choices=(
         ('FEMALE', 'FEMALE'),
         ('MALE', 'MALE'),
-        ('OTHERS', 'OTHERS')
+        ('OTHERS', 'OTHERS'),
     ))
     date_of_birth = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
+        verbose_name = 'designation'
+        verbose_name_plural = 'designations' 
 
 
     def __str__(self):

@@ -54,7 +54,7 @@
 
 
     <!-- Datatables -->
-    <link rel="stylesheet" type="text/css" href=" {% static 'dashboard/assets/vendor/datatable/datatables.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href=" {% static 'dashboard/admin/assets/css/datatables.min.css' %}"/>
 
     <style>
         .btn-success-space {
@@ -110,13 +110,13 @@
                                     <span class="material-icons">short_text</span>
                                 </button>
                                 <!-- Navbar Brand -->
-                                <a href="{% url 'sample_app:home' %}" class="navbar-brand flex">
+                                <a href="{% url 'dashboard:home' %}" class="navbar-brand flex">
                                     <span>{% block subtitle %}{% endblock %}</span>
                                 </a>
                                 <!-- breadcrumb -->
                                 <div class="nav-breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'sample_app:home' %}">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="{% url 'dashboard:home' %}">Home</a></li>
                                         {% block breadcrumb %}
                                         {% endblock %}
                                     </ol>
@@ -145,7 +145,7 @@
             
                                         </div>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'sample_app:logout' %}">
+                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'dashboard:logout' %}">
                                             <span class="material-icons mr-2">exit_to_app</span> Logout
                                         </a>
                                        
@@ -239,16 +239,14 @@
     <!-- Global Settings -->
     <script src="{% static 'dashboard/admin/assets/js/settings.js' %} "></script>
 
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
     <!-- Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <!-- Sweet Alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8/dist/sweetalert2.min.js"></script>
 
     <!-- Datatables -->
-    <script type="text/javascript" src="{% static 'dashboard/assets/vendor/datatable/datatables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dashboard/admin/assets/js/datatables.min.js' %}"></script>
 
     <script>
         $('.delete-link').click(function(event){
@@ -256,13 +254,6 @@
             $("#dynamicDeleteModal").modal('show');
             $("#dynamicDeleteModal").find('form').attr('action', $(this).attr('href'));
         });
-
-        // Select2
-        $(document).ready(function () {
-            $('.select2').select2();
-        });
-       
-       
     </script>
 
     <script>
@@ -283,7 +274,7 @@
             type: swal_type,
             title: '{{ message }}',
             showConfirmButton: false,
-            timer: 2000,
+            timer: 20000,
         })
         {% endfor %}
     </script>
@@ -307,31 +298,27 @@
             allowInput: true,
         });
 
-        //initialize datatable
-        // $('.basic-datatable').DataTable({
-        //     dom: '<"row"<"col-lg-6"l><"col-lg-6"f>><"table-responsive"t>p',
-        //     "pageLength": 25,
-        //     "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        //     "search": {
-        //         "search": ""
-        //     },
-        //     initComplete: function() {
-        //         $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
-        //     }
-        // });
+        // initialize datatable
+        $('.basic-datatable').DataTable({
+            dom: '<"row"<"col-lg-6"l><"col-lg-6"f>><"table-responsive"t>p',
+            "pageLength": -1,
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            "search": {
+                "search": ""
+            },
+            initComplete: function() {
+                $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
+            }
+        });
 
         // init select2
-        $("select:not(.non-select2)").select2({ 
+        $(".select2").select2({ 
             width: '100%',
         });
 
         // delete link
 		$('body').on('click', '.a-delete', function (e) {
 			e.preventDefault();
-			{% comment %} if (!confirm("Are you sure you want to delete ? "))
-				return;
-			window.location.href = $(this).attr('href'); {% endcomment %}
-
 			Swal.fire({
 				title: 'Are you sure?',
 				text: "You won't be able to revert this!",

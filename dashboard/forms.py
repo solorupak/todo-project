@@ -85,5 +85,12 @@ class DesignationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
-            self.fields[field].widget.attrs.update(
-                {'class': 'form-control'})
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+        self.fields['date_of_birth'].widget.attrs.update({
+            'class': 'form-control datetimepicker'
+        })
+        self.fields['gender'].widget.attrs.update({
+            'class': 'form-control select2'
+        })
