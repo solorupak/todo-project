@@ -66,7 +66,7 @@ class LogoutView(View):
         return redirect('dashboard:login')
 
 # Password Reset
-class ChangePasswordView(CustomLoginRequiredMixin, FormView):
+class ChangePasswordView(CustomLoginRequiredMixin, SuccessMessageMixin, FormView):
     form_class = PasswordResetForm
     template_name = "dashboard/auth/change_password.html"
     success_message = "Password Has Been Changed"
@@ -78,9 +78,9 @@ class ChangePasswordView(CustomLoginRequiredMixin, FormView):
         return form
 
     def form_valid(self, form):
-        password = form.cleaned_data['password']
         account = User.objects.filter(username=self.request.user).first()
-        account.set_password(form.cleaned_data['password'])
+        account.set_password(form.cleaned_data['confirm_password'])
+        account.save(update_fields=['password'])
         user = authenticate(username=self.request.user, password=password)
         login(self.request, user)
         return super().form_valid(form)
