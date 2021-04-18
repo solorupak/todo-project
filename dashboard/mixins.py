@@ -9,8 +9,8 @@ from django.views.generic import DeleteView
 User = get_user_model()
 
 class NonDeletedListMixin:
-	def get_querset(self):
-		return super().get_querset(deleted_at__isnull=True)
+	def get_queryset(self):
+		return super().get_queryset().filter(deleted_at__isnull=True)
 
 class GetDeleteMixin(DeleteView):
 	def get(self, request, *args, **kwargs):

@@ -91,7 +91,7 @@ class DesignationListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListVie
     model = Designation
     template_name = "dashboard/designations/list.html"
 
-    def get_querset(self):
+    def get_queryset(self):
         return super().get_queryset().order_by('-created_at')
 
 class DesignationCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, CreateView):
