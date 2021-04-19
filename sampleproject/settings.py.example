@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     # external apps
     'django_extensions',
     'debug_toolbar',
+    'rest_framework',
 
     # internal apps
     'dashboard',
+    'api'
 
 ]
 
@@ -145,3 +147,9 @@ EMAIL_HOST_PASSWORD = 'dzgmhcgo'
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 USE_X_FORWARDED_HOST = True
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'PAGE_SIZE': 25
+}
