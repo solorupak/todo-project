@@ -9,7 +9,7 @@ from django.utils.crypto import get_random_string
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
 from .forms import LoginForm, SignUpForm, DesignationForm, PasswordResetForm, UserForm
-from .mixins import BaseMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin
+from .mixins import BaseMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin, NonSuperAdminRequiredMixin, SuperAdminRequiredMixin
 from .models import Designation 
 
 User = get_user_model()
@@ -18,7 +18,7 @@ class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
     template_name = 'dashboard/index.html'
 
 # Git Pull View
-class GitPullView(CustomLoginRequiredMixin, View):
+class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         import subprocess
         process = subprocess.Popen(['./pull.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

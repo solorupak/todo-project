@@ -18,6 +18,18 @@ class GetDeleteMixin(DeleteView):
 			messages.success(self.request, self.success_message)
 		return super().post(request, *args, **kwargs)
 
+class SuperAdminRequiredMixin:
+	def dispatch(self, request, *args, **kwargs):
+		if self.request.user.is_superuser:
+			return super().dispatch(request, *args, **kwargs)
+		return self.handle_no_permission()
+
+class NonSuperAdminRequiredMixin:
+	def dispatch(self, request, *args, **kwargs):
+		if not self.request.user.is_superuser:
+			return super().dispatch(request, *args, **kwargs)
+		return self.handle_no_permission()
+
 class NonLoginRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.is_authenticated and User.objects.filter(username=self.request.user.username, is_active=True).exists():
