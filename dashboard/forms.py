@@ -124,3 +124,26 @@ class DesignationForm(forms.ModelForm):
         self.fields['gender'].widget.attrs.update({
             'class': 'form-control select2'
         })
+
+
+class UserForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+            self.fields[field].required = True
+    
+    def clean_email(self):
+        email =  self.cleaned_data.get('email')
+
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("User with this email address already exists")
+        
+        return email

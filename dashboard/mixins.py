@@ -9,14 +9,26 @@ from django.views.generic import DeleteView
 User = get_user_model()
 
 class NonDeletedListMixin:
-	def get_querset(self):
-		return super().get_querset(deleted_at__isnull=True)
+	def get_queryset(self):
+		return super().get_queryset().filter(deleted_at__isnull=True)
 
 class GetDeleteMixin(DeleteView):
 	def get(self, request, *args, **kwargs):
 		if hasattr(self, 'success_message'):
 			messages.success(self.request, self.success_message)
 		return super().post(request, *args, **kwargs)
+
+class SuperAdminRequiredMixin:
+	def dispatch(self, request, *args, **kwargs):
+		if self.request.user.is_superuser:
+			return super().dispatch(request, *args, **kwargs)
+		return self.handle_no_permission()
+
+class NonSuperAdminRequiredMixin:
+	def dispatch(self, request, *args, **kwargs):
+		if not self.request.user.is_superuser:
+			return super().dispatch(request, *args, **kwargs)
+		return self.handle_no_permission()
 
 class NonLoginRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
