@@ -46,12 +46,21 @@
                             </a>
                         </li>
 
+                        {% if request.user.is_superuser %}
                         <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" href="{% url 'dashboard:users-list' %}">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">supervisor_account</i>
                                 <span class="sidebar-menu-text"> Users </span>
                             </a>
                         </li>
+
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:audittrail-list' %}">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
+                                <span class="sidebar-menu-text"> Audit </span>
+                            </a>
+                        </li>
+                        {% endif %}
 
                         <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" data-toggle="collapse" href="#employee_menu">

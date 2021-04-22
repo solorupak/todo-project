@@ -8,6 +8,9 @@ urlpatterns=[
 
         # git-pull
         path('git-pull', views.GitPullView.as_view(), name='git-pull'),
+
+        # audit-trail
+        path('audits', views.AuditTrailListView.as_view(), name='audittrail-list'),
         
         # accounts
         path('accounts/signup/', views.SignupView.as_view(), name='signup'),

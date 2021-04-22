@@ -1,6 +1,26 @@
+from django.apps import apps
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+
+
+# Audit Log which records transactions
+class AuditTrail(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    model_type = models.CharField('Model Type', max_length=255)
+    object_id = models.IntegerField('Model Id')
+    object_str = models.CharField('Model Str', max_length=255)
+    action = models.CharField(max_length=255)
+    ip = models.GenericIPAddressField(null=True)
+    instance = models.JSONField(null=True)
+    previous_instance = models.JSONField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.model_type) 
+        
+
 
 class DateTimeModel(models.Model):
     created_at = models.DateTimeField(
@@ -35,8 +55,9 @@ class Designation(DateTimeModel):
 
     class Meta:
         ordering = ["name"]
-        verbose_name = 'designation'
-        verbose_name_plural = 'designations' 
+        verbose_name = 'Designation'
+        verbose_name_plural = 'Designations' 
 
     def __str__(self):
         return self.name
+
