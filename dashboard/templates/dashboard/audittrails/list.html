@@ -25,7 +25,7 @@
                     <tbody class="text-center">
                         {% for audit in object_list %}
                         <tr>
-                            <td>{{ forloop.counter }}</td>
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                             <td>{{ audit.user }}</td>
                             <td><span class="badge badge-primary">{{ audit.action }}</span></td>
                             <td><span class="badge badge-success">{{ audit.model_type }}</span></td>

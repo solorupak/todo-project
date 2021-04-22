@@ -73,7 +73,7 @@ class LoginForm(forms.Form):
             raise forms.ValidationError("Incorrect username or password")
         return self.cleaned_data
 
-class PasswordResetForm(forms.Form):
+class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={'class': 'form-control', 'placeholder':  'Current Password'}))
@@ -93,12 +93,11 @@ class PasswordResetForm(forms.Form):
         confirm_password = self.cleaned_data.get('confirm_password')
 
         user = self.user
+        
         if not user.check_password(current_password):
-            raise forms.ValidationError({"current_password": "Incorrect password" })
-        if not confirm_password:
-            raise forms.ValidationError({'confirm_password': "Enter confirm password" })
+            raise forms.ValidationError({"current_password": "Incorrect current password" })
         if password != confirm_password:
-            raise forms.ValidationError({'confirm_password': "Your passwords do not match" })
+            raise forms.ValidationError({'confirm_password': "Password confirmation failed" })
 
         return self.cleaned_data
 

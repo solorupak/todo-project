@@ -12,19 +12,6 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-# def storeAuditTrail(prevObjModel, objModel, actionType, request):
-#     aTrail = AuditTrail()
-#     aTrail.modelType = objModel._meta.verbose_name.title()
-#     aTrail.objectId = objModel.pk
-#     aTrail.object_str = str(objModel)
-#     aTrail.action = actionType
-#     aTrail.user = request.user
-#     aTrail.ip = get_client_ip(request)
-#     if prevObjModel:
-#         aTrail.fromObj = serializers.serialize("json", [prevObjModel])
-#     aTrail.toObj = serializers.serialize("json", [objModel])
-#     aTrail.save()
-
 
 def store_audit(*, request, instance, action, previous_instance=None):
     audit = AuditTrail()

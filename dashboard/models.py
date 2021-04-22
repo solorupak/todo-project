@@ -40,7 +40,8 @@ class DateTimeModel(models.Model):
         if not hard:
             self.deleted_at = timezone.now()
             super().save()
-        return super().delete()
+        else:
+            super().delete()
 
 
 class Designation(DateTimeModel):

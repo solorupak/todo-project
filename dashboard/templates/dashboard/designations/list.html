@@ -36,7 +36,7 @@
                     <tbody>
                         {% for designation in object_list %}
                         <tr>
-                            <td>{{ forloop.counter }}</td>
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                             <td>{{ designation.name }}</td>
                             <td>{{ designation.position }}</td>
                             <td>

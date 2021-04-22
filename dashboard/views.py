@@ -87,7 +87,7 @@ class LogoutView(CustomLoginRequiredMixin, View):
 
 # Password Reset
 class ChangePasswordView(CustomLoginRequiredMixin, SuccessMessageMixin, FormView):
-    form_class = PasswordResetForm
+    form_class = ChangePasswordForm
     template_name = "dashboard/auth/change_password.html"
     success_message = "Password Has Been Changed"
     success_url = reverse_lazy('dashboard:index')
@@ -135,7 +135,7 @@ class DesignationDeleteView(CustomLoginRequiredMixin, NonDeletedListMixin, Succe
 
 
 # User CRUD
-class UserListView(CustomLoginRequiredMixin, ListView):
+class UserListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     model = User
     template_name = "dashboard/users/list.html"
     paginate_by = 100
@@ -143,23 +143,23 @@ class UserListView(CustomLoginRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset().exclude(username=self.request.user)
 
-class UserCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, AuditCreateMixin, CreateView):
+class UserCreateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditCreateMixin, CreateView):
     form_class= UserForm
     success_message = "User Created Successfully"
     success_url = reverse_lazy('dashboard:users-list')
     template_name = "dashboard/users/form.html"
 
     def get_success_url(self):
-        return reverse('dashboard:password-reset', kwargs={'pk': self.object.pk })
+        return reverse('dashboard:users-password-reset', kwargs={'pk': self.object.pk })
 
-class UserUpdateView(CustomLoginRequiredMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
+class UserUpdateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
     form_class = UserForm
     model = User
     success_message = "User Updated Successfully"
     success_url = reverse_lazy('dashboard:users-list')
     template_name = "dashboard/users/form.html"
 
-class UserStatusView(CustomLoginRequiredMixin, SuccessMessageMixin, View):
+class UserStatusView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, View):
     model = User
     success_message = "User's Status Has Been Changed"
     success_url = reverse_lazy('dashboard:users-list')
@@ -177,7 +177,7 @@ class UserStatusView(CustomLoginRequiredMixin, SuccessMessageMixin, View):
 
 
 # Password Reset
-class PasswordResetView(CustomLoginRequiredMixin, SuccessMessageMixin, View):
+class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, View):
     model = User
     success_url = reverse_lazy("dashboard:users-list")
     success_message = "Password has been sent to the user's email."
@@ -197,9 +197,9 @@ class PasswordResetView(CustomLoginRequiredMixin, SuccessMessageMixin, View):
         return redirect(self.success_url)
 
 # AuditTrail List
-class AuditTrailListView(SuperAdminRequiredMixin, ListView):
+class AuditTrailListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     model = AuditTrail
-    paginate_by = 10
+    paginate_by = 100
     template_name = 'dashboard/audittrails/list.html'
     
     def get_queryset(self):

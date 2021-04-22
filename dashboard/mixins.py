@@ -34,7 +34,7 @@ class NonSuperAdminRequiredMixin:
 
 class NonLoginRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated and User.objects.filter(username=self.request.user.username, is_active=True).exists():
+        if self.request.user.is_authenticated:
             return redirect('dashboard:index')
         return super().dispatch(request, *args, **kwargs)
 
