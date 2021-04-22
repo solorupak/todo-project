@@ -34,8 +34,6 @@ class SignUpForm(forms.ModelForm):
         self.fields['password'].label = "Password"
         self.fields['confirm_password'].label = "Confirm Password"
 
-
-
     def clean_confirm_password(self):
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
@@ -48,7 +46,7 @@ class SignUpForm(forms.ModelForm):
         return confirm_password
 
     def clean_email(self):
-        data = self.cleaned_data['email']
+        data = self.cleaned_data.get('email')
         if not data:
             raise forms.ValidationError("Email cannot be Empty")
         if User.objects.filter(email=data).exists():
@@ -57,7 +55,6 @@ class SignUpForm(forms.ModelForm):
         # Always return the cleaned data, whether you have changed it or
         # not.
         return data
-
 
 
 class LoginForm(forms.Form):
@@ -69,14 +66,14 @@ class LoginForm(forms.Form):
             attrs={'class': 'form-control', 'placeholder':  'Password'}))
 
     def clean(self):
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
         user = User.objects.filter(username=username, is_active=True).first()
         if user == None or not user.check_password(password):
             raise forms.ValidationError("Incorrect username or password")
         return self.cleaned_data
 
-class PasswordResetForm(forms.Form):
+class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={'class': 'form-control', 'placeholder':  'Current Password'}))
@@ -95,13 +92,11 @@ class PasswordResetForm(forms.Form):
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
 
-        user = self.user
-        if not user.check_password(current_password):
-            raise forms.ValidationError({"current_password": "Incorrect password" })
-        if not confirm_password:
-            raise forms.ValidationError({'corfirm_password': "You must confirm your password" })
+    
+        if not self.user.check_password(current_password):
+            raise forms.ValidationError({"current_password": "Incorrect current password" })
         if password != confirm_password:
-            raise forms.ValidationError({'confirm_password': "Your passwords do not match" })
+            raise forms.ValidationError({'confirm_password': "Password confirmation failed" })
 
         return self.cleaned_data
 

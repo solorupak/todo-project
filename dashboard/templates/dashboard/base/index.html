@@ -174,7 +174,7 @@
                                             </span>
                                             <span class="flex d-flex flex-column">
                                                 
-                                                <strong style="font-size: 1.125rem;"> {% if user.is_superuser %}{{ user }}{% else %}{{ user.first_name }} {{user.last_name}}{% endif %}</strong>
+                                                <strong style="font-size: 1.125rem;"> {% if user.is_authenticated %}{{ user }}{% endif %}</strong>
                                                 {% comment %}
                                                 <small class="text-muted text-uppercase">8 Users</small>
                                                 {% endcomment %}

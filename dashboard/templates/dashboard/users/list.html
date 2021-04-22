@@ -21,7 +21,7 @@
         </div>
         <div class="row ml-2 mr-2 mb-2 mt-2">
             <div class="col-sm-12 document-table-space">
-                <table class="table basic-datatable w-full no-footer" role="grid">
+                <table class="table  w-full no-footer" role="grid">
                     <thead class="table-space-top-bottom">
                         <tr role="row">
                             <th>S.N</th>
@@ -34,13 +34,13 @@
                     <tbody>
                         {% for users in object_list %}
                         <tr>
-                            <td>{{ forloop.counter }}</td>
+                            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                             <td>{{ users.username }}</td>
                             <td>{{ users.email }}</td>
                             <td>{% if users.is_active == True %} <span class="badge badge-success"> Active </span> {% else %} <span class="badge badge-danger"> In Active </span> {% endif %}</td>
                             <td>
                                 <div class="btn-group" role="group" style="margin:auto;">
-                                    <a href="{% url 'dashboard:password-reset' users.id %}"
+                                    <a href="{% url 'dashboard:users-password-reset' users.id %}"
                                         class=" btn-success password-reset">
                                         <button type="button" class="btn-sm btn btn-primary">Reset Password</button>
                                     </a>
@@ -64,6 +64,7 @@
                         
                     </tbody>
                 </table>
+                {% include 'dashboard/base/pagination.html' %}
             </div>
         </div>
     </div>
