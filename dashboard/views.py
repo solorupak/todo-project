@@ -8,7 +8,7 @@ from django.urls import resolve, reverse, reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
-from .forms import ChangePasswordForm, LoginForm, SignUpForm, DesignationForm, PasswordResetForm, UserForm
+from .forms import ChangePasswordForm, LoginForm, SignUpForm, DesignationForm, UserForm
 from .mixins import BaseMixin, AuditCreateMixin, AuditUpdateMixin, AuditDeleteMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin, NonSuperAdminRequiredMixin, SuperAdminRequiredMixin
 from .models import AuditTrail, Designation 
 from .audits import store_audit
