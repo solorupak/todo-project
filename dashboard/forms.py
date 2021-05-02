@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django import forms
-from django.contrib.auth.forms import PasswordResetForm
 from django.utils.html import mark_safe
 
 from .models import User, Designation
