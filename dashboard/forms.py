@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django import forms
 from django.utils.html import mark_safe
 
+from .mixins import FormControlMixin 
 from .models import User, Designation
+
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -99,7 +101,7 @@ class ChangePasswordForm(forms.Form):
         return self.cleaned_data
 
 
-class DesignationForm(forms.ModelForm):
+class DesignationForm(FormControlMixin, forms.ModelForm):
 
     class Meta:
         model = Designation
@@ -107,10 +109,6 @@ class DesignationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control'
-            })
         self.fields['date_of_birth'].widget.attrs.update({
             'class': 'form-control datetimepicker'
         })
@@ -119,7 +117,7 @@ class DesignationForm(forms.ModelForm):
         })
 
 
-class UserForm(forms.ModelForm):
+class UserForm(FormControlMixin, forms.ModelForm):
 
     class Meta:
         model = User
