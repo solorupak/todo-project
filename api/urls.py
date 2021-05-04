@@ -1,8 +1,10 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 
-from . import views
+
+from .views import DesignationListAPIView
 
 urlpatterns = [
-  
+    path("designations/", DesignationListAPIView.as_view(), name="designations-list"),
+
+
 ]

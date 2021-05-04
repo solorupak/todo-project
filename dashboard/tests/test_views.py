@@ -6,40 +6,39 @@ from dashboard.views import DesignationListView, DesignationCreateView, Designat
 from dashboard.models import Designation, User
 
 # Designation View Test
-# class TestMinistryWithoutLoginViews(TestCase):
+class TestDesignationWithoutLoginViews(TestCase):
 
-#     def setUp(self):
-#         self.ministry = Ministry.objects.create(
-#             ministry='Artha Mantralaye',
-#             active = True
-#         )
-#         client = Client()
-#         self.list_url = reverse('dashboard:ministry-list')
+    def setUp(self):
+        self.designation = Designation.objects.create(
+            name = 'Luis Suarez',
+            position = 'Striker',
+            gender = 'MALE',
+            date_of_birth = '2020-01-12'
+        )
+        client = Client()
+        self.list_url = reverse('dashboard:designations-list')
 
-#     def test_ministry_list_GET(self):
-#         response = self.client.get(self.list_url)
-#         self.assertEquals(response.status_code, 302)
+    def test_designation_list_GET(self):
+        response = self.client.get(self.list_url)
+        self.assertEquals(response.status_code, 302)
 
-# class TestMinistryViews(TestCase):
+class TestDesignationViews(TestCase):
 
-#     def setUp(self):
-#         self.user = User.objects.create_user('pranish','pranish@gmail.com', 'pranish')
-#         client = Client()
-#         self.list_url = reverse('dashboard:ministry-list')
+    def setUp(self):
+        self.user = User.objects.create_user('ramesh','ramesh@gmail.com', 'ramesh')
+        client = Client()
+        self.list_url = reverse('dashboard:designations-list')
 
-#     def test_ministry_list_for_unauthorized_user(self):
-#         self.user.is_superuser = True
-#         self.user.save(update_fields=['is_superuser'])
-#         self.client.login(username='pranish', password='pranish')
-#         response = self.client.get(self.list_url)
-#         self.assertEquals(response.status_code, 200)
-#         self.assertTemplateUsed(response, 'dashboard/ministry/list.html')
+    def test_designation_list_for_authorized_user(self):
+        self.client.login(username='ramesh', password='ramesh')
+        response = self.client.get(self.list_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dashboard/designations/list.html')
 
 
-#     def test_ministry_list_for_unauthorized_user(self):
-#         self.client.login(username='pranish', password='pranish')
-#         response = self.client.get(self.list_url)
-#         self.assertEquals(response.status_code, 403)
+    def test_designation_list_for_unauthorized_user(self):
+        response = self.client.get(self.list_url)
+        self.assertEquals(response.status_code, 302)
 
 
 class TestLoginView(TestCase):
@@ -80,8 +79,6 @@ class TestLoginView(TestCase):
     def test_logout(self):
         # Log in
         self.client.login(username='ramesh', password='ramesh')
-
-        self.user.is_superuser = True
 
         # Request a page that requires a login
         response = self.client.get(reverse('dashboard:index'))
