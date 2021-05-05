@@ -1,3 +1,4 @@
+
 from django.conf import settings as conf_settings
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -9,9 +10,26 @@ from django.urls import resolve, reverse, reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
-
-from .forms import ChangePasswordForm, LoginForm, SignUpForm, DesignationForm, UserForm
-from .mixins import BaseMixin, AuditCreateMixin, AuditUpdateMixin, AuditDeleteMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin, NonSuperAdminRequiredMixin, SuperAdminRequiredMixin
+from .forms import (
+    ChangePasswordForm, 
+    LoginForm, 
+    SignUpForm, 
+    DesignationForm, 
+    UserForm
+)
+from .mixins import (
+    BaseMixin, 
+    AuditCreateMixin, 
+    AuditUpdateMixin, 
+    AuditDeleteMixin, 
+    CustomLoginRequiredMixin, 
+    GetDeleteMixin, 
+    GroupRequiredMixin,
+    NonDeletedListMixin, 
+    NonLoginRequiredMixin, 
+    NonSuperAdminRequiredMixin, 
+    SuperAdminRequiredMixin
+)
 from .models import AuditTrail, Designation 
 from .audits import store_audit
 
@@ -153,6 +171,7 @@ class UserCreateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessM
 
     def get_success_url(self):
         return reverse('dashboard:users-password-reset', kwargs={'pk': self.object.pk })
+    
 
 class UserUpdateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
     form_class = UserForm
@@ -167,7 +186,7 @@ class UserStatusView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessM
     success_url = reverse_lazy('dashboard:users-list')
 
     def get(self, request, *args, **kwargs):
-        user_id = self.kwargs['pk']
+        user_id = self.kwargs.get('pk')
         if user_id:
             account = User.objects.filter(pk=user_id).first()
             if account.is_active == True:
@@ -185,7 +204,7 @@ class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, S
     success_message = "Password has been sent to the user's email."
 
     def get(self, request, *args, **kwargs):
-        user_pk = self.kwargs["pk"]
+        user_pk = self.kwargs.get('pk')
         account = User.objects.filter(pk=user_pk).first()
         password = get_random_string(length=6)
         account.set_password(password)

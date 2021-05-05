@@ -1,9 +1,9 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, User
 from django import forms
 from django.utils.html import mark_safe
 
 from .mixins import FormControlMixin 
-from .models import User, Designation
+from .models import Designation
 
 
 class SignUpForm(forms.ModelForm):
@@ -121,14 +121,17 @@ class UserForm(FormControlMixin, forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'groups']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['groups'].widget.attrs.update({
+            'class': 'form-control select2'
+        })
         self.fields['email'].required = True
     
     def clean_email(self):
-        email =  self.cleaned_data.get('email')
+        email = self.cleaned_data.get('email')
 
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("User with this email address already exists")

@@ -1,6 +1,8 @@
+
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -73,3 +75,12 @@ class FormControlMixin:
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+
+
+class GroupRequiredMixin(object):
+    group_required = None
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_superuser or self.request.user.groups.filter(name__in=self.group_required).exists():
+            return super().dispatch(request, *args, **kwargs)
+        raise PermissionDenied
