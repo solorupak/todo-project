@@ -1,7 +1,27 @@
 from django.test import SimpleTestCase
 from django.urls import reverse,resolve
 
-from dashboard.views import DesignationListView, DesignationCreateView, DesignationUpdateView, DesignationDeleteView, LoginPageView
+from dashboard.views import DesignationListView, DesignationCreateView, DesignationUpdateView, DesignationDeleteView, LoginPageView, LogoutView
+
+
+ # Login Url Test
+class TestLoginUrls(SimpleTestCase): 
+    def test_login_url_is_resolved(self):
+        url = reverse('dashboard:login')
+        self.assertEquals(resolve(url).func.view_class, LoginPageView)
+
+# Logout Url Test
+class TestLogoutUrls(SimpleTestCase): 
+    def test_logout_url_is_resolved(self):
+        url = reverse('dashboard:logout')
+        self.assertEquals(resolve(url).func.view_class, LogoutView)
+    
+# Invalid Url Test
+class TestInvalidUrls(SimpleTestCase):
+    def test_unknown_page(self):
+        #GET an invalid URL
+        response = self.client.get('/unknown_view/')
+        self.assertEqual(response.status_code, 404)
 
 # Designation Url Test
 class TestDesignationUrls(SimpleTestCase):
@@ -23,15 +43,3 @@ class TestDesignationUrls(SimpleTestCase):
         self.assertEquals(resolve(url).func.view_class, DesignationDeleteView)
 
 
- # Login Url Test
-class TestLoginUrls(SimpleTestCase): 
-    def test_login_url_is_resolved(self):
-        url = reverse('dashboard:login')
-        self.assertEquals(resolve(url).func.view_class, LoginPageView)
-    
-# Invalid Url Test
-class TestInvalidUrls(SimpleTestCase):
-    def test_unknown_page(self):
-        #GET an invalid URL
-        response = self.client.get('/unknown_view/')
-        self.assertEqual(response.status_code, 404)

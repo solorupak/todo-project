@@ -1,3 +1,4 @@
+import subprocess
 
 from django.conf import settings as conf_settings
 from django.core.mail import send_mail
@@ -41,7 +42,6 @@ class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
 # Git Pull View
 class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        import subprocess
         process = subprocess.Popen(['./pull.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         returncode = process.wait()
         output = ''
@@ -217,6 +217,13 @@ class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, S
         messages.success(self.request, self.success_message)
         return redirect(self.success_url)
 
+
+# GroupRequiredMixinTest
+class GroupRequiredTestView(CustomLoginRequiredMixin, GroupRequiredMixin, TemplateView):
+    template_name = "dashboard/designations/list.html"
+    group_required = ['editor']
+
+ 
 # AuditTrail List
 class AuditTrailListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     model = AuditTrail

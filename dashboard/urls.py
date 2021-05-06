@@ -24,6 +24,10 @@ urlpatterns=[
         path('designations/<int:pk>/update', views.DesignationUpdateView.as_view(), name='designations-update'),
         path('designations/<int:pk>/delete', views.DesignationDeleteView.as_view(), name='designations-delete'),
 
+        #grouprequiredmixin test
+        path('groups/', views.GroupRequiredTestView.as_view(), name='groups-list'),
+
+
         # user crud
         path('users/', views.UserListView.as_view(), name='users-list'),
         path('users/create', views.UserCreateView.as_view(), name='users-create'),

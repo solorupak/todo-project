@@ -47,6 +47,16 @@
                             </a>
                         </li>
 
+                        {% if request.user|has_groups:'editor' or request.user.is_superuser %}
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="{% url 'dashboard:groups-list' %}">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">view_list</i>
+                                <span class="sidebar-menu-text"> Group Test </span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+
                         {% if request.user.is_superuser %}
                         <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" href="{% url 'dashboard:users-list' %}">
@@ -63,7 +73,7 @@
                         </li>
                         {% endif %}
 
-                        {% if request.user|has_groups:'editor' or request.user.is_superuser %}
+                       
                         <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" data-toggle="collapse" href="#employee_menu">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">settings</i>
@@ -83,8 +93,7 @@
                                 </li>
                             </ul>
                         </li>
-                        {% endif %}
-
+                        
                     </ul>
                 </div>
             </div>
