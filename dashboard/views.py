@@ -36,8 +36,14 @@ from .audits import store_audit
 
 User = get_user_model()
 
+class HomeView(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('dashboard:login')
+
 class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
     template_name = 'dashboard/index.html'
+
+
 
 # Git Pull View
 class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
