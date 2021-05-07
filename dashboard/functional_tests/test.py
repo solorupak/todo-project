@@ -54,7 +54,7 @@ class TestLoginPage(Setup):
 
 
 
-class TestDesignationFormLoginPage(Setup):
+class TestDesignationFormPage(Setup):
 
     def test_create_designation(self):
         self.browser.get(self.live_server_url)
