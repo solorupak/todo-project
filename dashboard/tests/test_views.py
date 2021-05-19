@@ -79,6 +79,7 @@ class TestAuditTrailViews(TestCase):
         response = self.client.get(self.list_url)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'dashboard/audittrails/list.html')
+        self.assertContains(response, '<span>Audit</span>')
    
 # Designation View Test
 class TestDesignationViews(TestCase):

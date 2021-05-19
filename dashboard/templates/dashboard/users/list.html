@@ -26,6 +26,7 @@
                         <tr role="row">
                             <th>S.N</th>
                             <th>Name</th>
+                            <th>Group</th>
                             <th>Email</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -36,6 +37,7 @@
                         <tr>
                             <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                             <td>{{ users.username }}</td>
+                            <td><span class="badge badge-secondary">{{ users.groups.all.0 }}</span></td>
                             <td>{{ users.email }}</td>
                             <td>{% if users.is_active == True %} <span class="badge badge-success"> Active </span> {% else %} <span class="badge badge-danger"> In Active </span> {% endif %}</td>
                             <td>
@@ -78,7 +80,6 @@
         e.preventDefault();
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -96,7 +97,6 @@ $('body').on('click', '.user-activate', function (e) {
     e.preventDefault();
     Swal.fire({
         title: 'Are you sure you want to activate this user?',
-        text: "You won't be able to revert this!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -114,7 +114,6 @@ $('body').on('click', '.user-deactivate', function (e) {
     e.preventDefault();
     Swal.fire({
         title: 'Are you sure you want to deactivate this user?',
-        text: "You won't be able to revert this!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
