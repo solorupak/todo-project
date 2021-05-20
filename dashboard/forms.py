@@ -1,9 +1,10 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, User
 from django import forms
-from django.contrib.auth.forms import PasswordResetForm
 from django.utils.html import mark_safe
 
-from .models import User, Designation
+from .mixins import FormControlMixin 
+from .models import Designation
+
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -91,7 +92,6 @@ class ChangePasswordForm(forms.Form):
         current_password = self.cleaned_data.get('current_password')
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
-
     
         if not self.user.check_password(current_password):
             raise forms.ValidationError({"current_password": "Incorrect current password" })
@@ -101,7 +101,7 @@ class ChangePasswordForm(forms.Form):
         return self.cleaned_data
 
 
-class DesignationForm(forms.ModelForm):
+class DesignationForm(FormControlMixin, forms.ModelForm):
 
     class Meta:
         model = Designation
@@ -109,10 +109,6 @@ class DesignationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control'
-            })
         self.fields['date_of_birth'].widget.attrs.update({
             'class': 'form-control datetimepicker'
         })
@@ -121,22 +117,21 @@ class DesignationForm(forms.ModelForm):
         })
 
 
-class UserForm(forms.ModelForm):
+class UserForm(FormControlMixin, forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'groups']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in iter(self.fields):
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control'
-            })
-            self.fields[field].required = True
+        self.fields['groups'].widget.attrs.update({
+            'class': 'form-control select2'
+        })
+        self.fields['email'].required = True
     
     def clean_email(self):
-        email =  self.cleaned_data.get('email')
+        email = self.cleaned_data.get('email')
 
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("User with this email address already exists")

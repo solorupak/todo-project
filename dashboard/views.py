@@ -1,27 +1,53 @@
+import subprocess
+
 from django.conf import settings as conf_settings
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
-from .forms import ChangePasswordForm, LoginForm, SignUpForm, DesignationForm, PasswordResetForm, UserForm
-from .mixins import BaseMixin, AuditCreateMixin, AuditUpdateMixin, AuditDeleteMixin, CustomLoginRequiredMixin, GetDeleteMixin, NonDeletedListMixin, NonLoginRequiredMixin, NonSuperAdminRequiredMixin, SuperAdminRequiredMixin
+from .forms import (
+    ChangePasswordForm, 
+    LoginForm, 
+    SignUpForm, 
+    DesignationForm, 
+    UserForm
+)
+from .mixins import (
+    BaseMixin, 
+    AuditCreateMixin, 
+    AuditUpdateMixin, 
+    AuditDeleteMixin, 
+    CustomLoginRequiredMixin, 
+    GetDeleteMixin, 
+    GroupRequiredMixin,
+    NonDeletedListMixin, 
+    NonLoginRequiredMixin, 
+    NonSuperAdminRequiredMixin, 
+    SuperAdminRequiredMixin
+)
 from .models import AuditTrail, Designation 
 from .audits import store_audit
 
 User = get_user_model()
 
+class HomeView(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('dashboard:login')
+
 class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
     template_name = 'dashboard/index.html'
+
+
 
 # Git Pull View
 class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        import subprocess
         process = subprocess.Popen(['./pull.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         returncode = process.wait()
         output = ''
@@ -151,6 +177,7 @@ class UserCreateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessM
 
     def get_success_url(self):
         return reverse('dashboard:users-password-reset', kwargs={'pk': self.object.pk })
+    
 
 class UserUpdateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
     form_class = UserForm
@@ -165,7 +192,7 @@ class UserStatusView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessM
     success_url = reverse_lazy('dashboard:users-list')
 
     def get(self, request, *args, **kwargs):
-        user_id = self.kwargs['pk']
+        user_id = self.kwargs.get('pk')
         if user_id:
             account = User.objects.filter(pk=user_id).first()
             if account.is_active == True:
@@ -183,7 +210,7 @@ class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, S
     success_message = "Password has been sent to the user's email."
 
     def get(self, request, *args, **kwargs):
-        user_pk = self.kwargs["pk"]
+        user_pk = self.kwargs.get('pk')
         account = User.objects.filter(pk=user_pk).first()
         password = get_random_string(length=6)
         account.set_password(password)
@@ -196,6 +223,13 @@ class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, S
         messages.success(self.request, self.success_message)
         return redirect(self.success_url)
 
+
+# GroupRequiredMixinTest
+class GroupRequiredTestView(CustomLoginRequiredMixin, GroupRequiredMixin, TemplateView):
+    template_name = "dashboard/designations/list.html"
+    group_required = ['editor']
+
+ 
 # AuditTrail List
 class AuditTrailListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     model = AuditTrail
