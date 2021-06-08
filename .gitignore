@@ -1,33 +1,28 @@
+*.log
+*.pot
+.vscode
 *.pyc
 __pycache__/
-migrations
-settings.py
-stacticcdn
-.idea/
+local_settings.py
 db.sqlite3
-db.json
+media
+migrations
+mailbox_attachments
+### Vim ###
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+settings.py
+.DS_Store
+*/.DS_Store
 venv/
 env/
-.idea
-media/
-staticcdn/
-celerybeat-schedule.bak
-celerybeat-schedule.dat
-celerybeat-schedule.dir
-dump.rdb
-celerybeat-schedule
-celerybeat.pid
-.read
-data.json
-data.psql
-database.db
-extract.json
-schema.psql
-.vscode
-.output
-static_cdn/
-debug
-require.txt
-migrate.sh
-.DS_Store
-.gitignore
