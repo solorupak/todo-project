@@ -20,9 +20,7 @@ from .forms import (
 )
 from .mixins import (
     BaseMixin, 
-    AuditCreateMixin, 
-    AuditUpdateMixin, 
-    AuditDeleteMixin, 
+    
     CustomLoginRequiredMixin, 
     GetDeleteMixin, 
     GroupRequiredMixin,
@@ -31,8 +29,10 @@ from .mixins import (
     NonSuperAdminRequiredMixin, 
     SuperAdminRequiredMixin
 )
-from .models import AuditTrail, Designation 
-from .audits import store_audit
+from audit.mixins import AuditCreateMixin, AuditDeleteMixin, AuditUpdateMixin
+from audit.models import AuditTrail
+from .models import Designation 
+from audit.utils import store_audit
 
 User = get_user_model()
 
