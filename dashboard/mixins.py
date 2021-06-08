@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
 
-from .audits import store_audit
 
 User = get_user_model()
 
@@ -52,21 +51,6 @@ class BaseMixin():
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         return context
-
-class AuditCreateMixin:
-    def form_valid(self, form):
-        store_audit(request=self.request, instance=form.save(), action='CREATE')
-        return super().form_valid(form)
-
-class AuditUpdateMixin:
-    def form_valid(self, form):
-        store_audit(request=self.request, instance=form.save(), action='UPDATE', previous_instance=self.get_object())
-        return super().form_valid(form)
-
-class AuditDeleteMixin:
-    def delete(self, request, *args, **kwargs):
-        store_audit(request=self.request, instance=self.get_object(), action='DELETE', previous_instance=self.get_object())
-        return super().delete(request, *args, **kwargs)
 
 class FormControlMixin:
     def __init__(self, *args, **kwargs):
