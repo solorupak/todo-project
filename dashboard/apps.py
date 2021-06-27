@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class SampleAppConfig(AppConfig):
+class FotopasalAppConfig(AppConfig):
     name = 'dashboard'
