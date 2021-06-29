@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group, User
 from django import forms
 from django.utils.html import mark_safe
 
-from .mixins import FormControlMixin 
+from .mixins import FormControlMixin
 from .models import Designation
 
 
@@ -11,7 +11,7 @@ class SignUpForm(forms.ModelForm):
         'class': 'form-control',
         'required': 'true',
         'placeholder': 'Password *'}))
-    
+
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'required': 'true',
@@ -19,7 +19,8 @@ class SignUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'confirm_password')
+        fields = ('username', 'first_name', 'last_name',
+                  'email', 'password', 'confirm_password')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,9 +29,12 @@ class SignUpForm(forms.ModelForm):
                 'class': 'form-control'
             })
 
-        self.fields['first_name'].widget.attrs.update({'placeholder':'First Name'})
-        self.fields['last_name'].widget.attrs.update({'placeholder':'Last Name'})
-        self.fields['username'].widget.attrs.update({'placeholder':'Username'})
+        self.fields['first_name'].widget.attrs.update(
+            {'placeholder': 'First Name'})
+        self.fields['last_name'].widget.attrs.update(
+            {'placeholder': 'Last Name'})
+        self.fields['username'].widget.attrs.update(
+            {'placeholder': 'Username'})
         self.fields['email'].label = "Email"
         self.fields['password'].label = "Password"
         self.fields['confirm_password'].label = "Confirm Password"
@@ -51,7 +55,8 @@ class SignUpForm(forms.ModelForm):
         if not data:
             raise forms.ValidationError("Email cannot be Empty")
         if User.objects.filter(email=data).exists():
-            raise forms.ValidationError(mark_safe("<span style='color: red;'>User with this email already exists</span>"))
+            raise forms.ValidationError(mark_safe(
+                "<span style='color: red;'>User with this email already exists</span>"))
 
         # Always return the cleaned data, whether you have changed it or
         # not.
@@ -74,6 +79,7 @@ class LoginForm(forms.Form):
             raise forms.ValidationError("Incorrect username or password")
         return self.cleaned_data
 
+
 class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
         widget=forms.PasswordInput(
@@ -87,16 +93,18 @@ class ChangePasswordForm(forms.Form):
 
     def set_user(self, user):
         self.user = user
-    
+
     def clean(self):
         current_password = self.cleaned_data.get('current_password')
         password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
-    
+
         if not self.user.check_password(current_password):
-            raise forms.ValidationError({"current_password": "Incorrect current password" })
+            raise forms.ValidationError(
+                {"current_password": "Incorrect current password"})
         if password != confirm_password:
-            raise forms.ValidationError({'confirm_password': "Password confirmation failed" })
+            raise forms.ValidationError(
+                {'confirm_password': "Password confirmation failed"})
 
         return self.cleaned_data
 
@@ -122,18 +130,19 @@ class UserForm(FormControlMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'groups']
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['groups'].widget.attrs.update({
             'class': 'form-control select2'
         })
         self.fields['email'].required = True
-    
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
 
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("User with this email address already exists")
-        
+            raise forms.ValidationError(
+                "User with this email address already exists")
+
         return email

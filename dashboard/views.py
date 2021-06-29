@@ -12,43 +12,45 @@ from django.utils.crypto import get_random_string
 from django.views.generic import View, TemplateView, FormView, ListView, CreateView, UpdateView, DeleteView
 
 from .forms import (
-    ChangePasswordForm, 
-    LoginForm, 
-    SignUpForm, 
-    DesignationForm, 
+    ChangePasswordForm,
+    LoginForm,
+    SignUpForm,
+    DesignationForm,
     UserForm
 )
 from .mixins import (
-    BaseMixin, 
-    
-    CustomLoginRequiredMixin, 
-    GetDeleteMixin, 
+    BaseMixin,
+
+    CustomLoginRequiredMixin,
+    GetDeleteMixin,
     GroupRequiredMixin,
-    NonDeletedListMixin, 
-    NonLoginRequiredMixin, 
-    NonSuperAdminRequiredMixin, 
+    NonDeletedListMixin,
+    NonLoginRequiredMixin,
+    NonSuperAdminRequiredMixin,
     SuperAdminRequiredMixin
 )
 from audit.mixins import AuditCreateMixin, AuditDeleteMixin, AuditUpdateMixin
 from audit.models import AuditTrail
-from .models import Designation 
+from .models import Designation
 from audit.utils import store_audit
 
 User = get_user_model()
+
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         return redirect('dashboard:login')
 
+
 class DashboardView(CustomLoginRequiredMixin,  BaseMixin, TemplateView):
     template_name = 'dashboard/index.html'
-
 
 
 # Git Pull View
 class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        process = subprocess.Popen(['./pull.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen(
+            ['./pull.sh'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         returncode = process.wait()
         output = ''
         output += process.stdout.read().decode("utf-8")
@@ -58,6 +60,8 @@ class GitPullView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
         return response
 
 # Registration
+
+
 class SignupView(BaseMixin, NonLoginRequiredMixin, CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('dashboard:index')
@@ -66,10 +70,10 @@ class SignupView(BaseMixin, NonLoginRequiredMixin, CreateView):
     def form_valid(self, form):
         # saving user
         user = User.objects.create(
-            username=form.cleaned_data.get('username'), 
-            first_name=form.cleaned_data.get('first_name'), 
-            last_name=form.cleaned_data.get('last_name'), 
-            email = form.cleaned_data.get('username')
+            username=form.cleaned_data.get('username'),
+            first_name=form.cleaned_data.get('first_name'),
+            last_name=form.cleaned_data.get('last_name'),
+            email=form.cleaned_data.get('username')
         )
         user.set_password(form.cleaned_data.get('password'))
         user.save()
@@ -78,9 +82,9 @@ class SignupView(BaseMixin, NonLoginRequiredMixin, CreateView):
         login(self.request, user)
         return redirect(self.success_url)
 
-    def form_invalid(self,form):
+    def form_invalid(self, form):
         if self.request.is_ajax():
-            return JsonResponse({'errors':form.errors}, status=400)
+            return JsonResponse({'errors': form.errors}, status=400)
         return super().form_invalid(form)
 
 
@@ -99,19 +103,24 @@ class LoginPageView(NonLoginRequiredMixin, FormView):
             self.request.session.set_expiry(0)
 
         login(self.request, user)
-        store_audit(request= self.request, instance=self.request.user, action='LOGIN')
+        store_audit(request=self.request,
+                    instance=self.request.user, action='LOGIN')
 
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
         return redirect('dashboard:index')
-        
+
+
 class LogoutView(CustomLoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        store_audit(request= self.request, instance=self.request.user, action='LOGOUT')
+        store_audit(request=self.request,
+                    instance=self.request.user, action='LOGOUT')
         logout(request)
         return redirect('dashboard:login')
 
 # Password Reset
+
+
 class ChangePasswordView(CustomLoginRequiredMixin, SuccessMessageMixin, FormView):
     form_class = ChangePasswordForm
     template_name = "dashboard/auth/change_password.html"
@@ -127,7 +136,8 @@ class ChangePasswordView(CustomLoginRequiredMixin, SuccessMessageMixin, FormView
         account = User.objects.filter(username=self.request.user).first()
         account.set_password(form.cleaned_data.get('confirm_password'))
         account.save(update_fields=['password'])
-        user = authenticate(username=self.request.user, password=form.cleaned_data.get('confirm_password'))
+        user = authenticate(username=self.request.user,
+                            password=form.cleaned_data.get('confirm_password'))
         login(self.request, user)
         return super().form_valid(form)
 
@@ -141,11 +151,13 @@ class DesignationListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListVie
     def get_queryset(self):
         return super().get_queryset().order_by('-created_at')
 
+
 class DesignationCreateView(CustomLoginRequiredMixin, SuccessMessageMixin, AuditCreateMixin, CreateView):
-    form_class= DesignationForm
+    form_class = DesignationForm
     success_message = "Designation Created Successfully"
     success_url = reverse_lazy('dashboard:designations-list')
     template_name = "dashboard/designations/form.html"
+
 
 class DesignationUpdateView(CustomLoginRequiredMixin, NonDeletedListMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
     form_class = DesignationForm
@@ -153,6 +165,7 @@ class DesignationUpdateView(CustomLoginRequiredMixin, NonDeletedListMixin, Succe
     success_message = "Designation Updated Successfully"
     success_url = reverse_lazy('dashboard:designations-list')
     template_name = "dashboard/designations/form.html"
+
 
 class DesignationDeleteView(CustomLoginRequiredMixin, NonDeletedListMixin, SuccessMessageMixin, GetDeleteMixin, AuditDeleteMixin, DeleteView):
     model = Designation
@@ -169,15 +182,16 @@ class UserListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset().exclude(username=self.request.user)
 
+
 class UserCreateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditCreateMixin, CreateView):
-    form_class= UserForm
+    form_class = UserForm
     success_message = "User Created Successfully"
     success_url = reverse_lazy('dashboard:users-list')
     template_name = "dashboard/users/form.html"
 
     def get_success_url(self):
-        return reverse('dashboard:users-password-reset', kwargs={'pk': self.object.pk })
-    
+        return reverse('dashboard:users-password-reset', kwargs={'pk': self.object.pk})
+
 
 class UserUpdateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, AuditUpdateMixin, UpdateView):
     form_class = UserForm
@@ -185,6 +199,7 @@ class UserUpdateView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessM
     success_message = "User Updated Successfully"
     success_url = reverse_lazy('dashboard:users-list')
     template_name = "dashboard/users/form.html"
+
 
 class UserStatusView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, SuccessMessageMixin, View):
     model = User
@@ -215,9 +230,11 @@ class UserPasswordResetView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, S
         password = get_random_string(length=6)
         account.set_password(password)
         msg = (
-            "You can login into the Dashboard with the following credentials.\n\n" + "Username: " + account.username + " \n" + "Password: " + password
+            "You can login into the Dashboard with the following credentials.\n\n" +
+            "Username: " + account.username + " \n" + "Password: " + password
         )
-        send_mail("Dashboard Credentials", msg, conf_settings.EMAIL_HOST_USER, [account.email], fail_silently=True)
+        send_mail("Dashboard Credentials", msg, conf_settings.EMAIL_HOST_USER, [
+                  account.email], fail_silently=True)
         account.save(update_fields=["password"])
 
         messages.success(self.request, self.success_message)
@@ -229,13 +246,13 @@ class GroupRequiredTestView(CustomLoginRequiredMixin, GroupRequiredMixin, Templa
     template_name = "dashboard/designations/list.html"
     group_required = ['editor']
 
- 
+
 # AuditTrail List
 class AuditTrailListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, ListView):
     model = AuditTrail
     paginate_by = 100
     template_name = 'dashboard/audittrails/list.html'
-    
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.order_by('-created_at')

@@ -4,6 +4,7 @@ from .models import AuditTrail
 
 # AUDIT_CHOICES = {a[1]: a[0] for a in AUDIT_TYPE_CHOICES}
 
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -23,5 +24,6 @@ def store_audit(*, request, instance, action, previous_instance=None):
     audit.ip = get_client_ip(request)
     audit.instance = serializers.serialize("json", [instance])
     if previous_instance:
-        audit.previous_instance = serializers.serialize("json", [previous_instance])
+        audit.previous_instance = serializers.serialize(
+            "json", [previous_instance])
     audit.save()
