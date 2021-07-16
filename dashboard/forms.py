@@ -5,6 +5,8 @@ from django.utils.html import mark_safe
 from .mixins import FormControlMixin
 from .models import Designation
 
+from todoapp.models import Task
+
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -146,3 +148,33 @@ class UserForm(FormControlMixin, forms.ModelForm):
                 "User with this email address already exists")
 
         return email
+
+# todo form
+
+
+class TodoForm(FormControlMixin, forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'last_date', 'is_important']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['last_date'].widget.attrs.update({
+            'class': 'form-control inlinecalendar flatpickr-input active'
+        })
+        self.fields['description'].widget.attrs.update({
+            'rows': '4'
+        })
+        self.fields['is_important'].widget.attrs.update({
+            'class': 'onoffswitch'
+        })
+
+    def clean(self):
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+
+        if not title and not description:
+            raise forms.ValidationError({
+                'title': 'Title and description both can not be empty.'
+            })
+        return self.cleaned_data

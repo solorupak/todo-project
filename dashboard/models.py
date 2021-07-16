@@ -74,7 +74,7 @@ class Ticket(DateTimeModel):
     assigned_to = models.CharField(max_length=255)
     assigned_time = models.DateTimeField()
     accepted_time = models.DateTimeField()
-    completed_time = models.DateTimeField()
+    completed_time = models.DateTimeField(null=True, blank=True)
     pending_time = models.DateTimeField(null=True, blank=True)
     is_completed = models.BooleanField(default=True)
     copied_to = models.CharField(max_length=255, null=True, blank=True)

@@ -1,10 +1,10 @@
-# Fotopasal Project
+# todo Project
 
 ## Project Setup
 
 ```bash
 pip install -r requirements.txt
-cp fotopasal/settings.py.example fotopasal/settings.py
+cp todo/settings.py.example todo/settings.py
 python manage.py makemigrations dashboard audit
 python manage.py migrate
 ```

@@ -1,0 +1,156 @@
+{% extends "dashboard/base/index.html" %}
+
+{% load static %}
+
+{% block title %}Todo{% endblock %}
+
+{% block subtitle %}Todo{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid page__container">
+    <div class="card document-card">
+        <div class="row mb-4 mt-4 mr-2">
+            <div class="col-md-12">
+                <div style="text-align: right">
+                    <a href="{% url 'dashboard:todo-create' %}" class="btn btn-outline-primary todo-form"
+                        data-toggle="modal" data-target="#todoModal">
+                        <i class="fa fa-plus"></i>&nbsp; Add Task
+                    </a>
+                </div>
+                <div class="float-left ml-3">
+                    <a href="" class="mr-2">
+                        <span><i class="fa fa-table fa-2x"></i></span>
+                    </a>
+                    <a href="" class="ml-2">
+                        <span><i class="fa fa-list fa-2x"></i></span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row ml-2 mr-2 mb-2 mt-2">
+            <div class="col-sm-12 document-table-space">
+                <table class="table w-full no-footer" role="grid">
+                    <thead class="table-space-top-bottom">
+                        <tr role="row">
+                            <th>S.N</th>
+                            <th>Title</th>
+                            <th>Created At</th>
+                            <th>Due time</th>
+                            <th>Last Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for todo in object_list %}
+                        <tr>
+                            <td>
+                                <a href="" class = "complete" action-link="{% url 'dashboard:todo-manage' todo.id %}?kw=completed">
+                                    <span class="mr-2"><i><input type="checkbox" ></i></span>
+                                </a>
+                                {{ page_obj.start_index|add:forloop.counter0 }}
+                            </td>
+                            <td>{{ todo.title }}</td>
+                            <td>{{ todo.created_at }}</td>
+                            <td>{{ todo.last_date|timeuntil }}</td>
+                            <td>{{ todo.last_date }}</td>
+
+                            <td>
+                                <div class="btn-group" role="group" style="margin:auto;">
+                                    <a href="{% url 'dashboard:todo-manage' todo.id %}?kw=imp" class="btn-sm btn btn-info btn-success-space" 
+                                    >
+                                        <i class="fa fa-star" {% if todo.is_important %}  style="color:yellow" {% endif %}></i>
+                                    </a>
+                                    <a href="{% url 'dashboard:todo-detail' todo.id %}" class="btn-sm btn btn-info btn-success-space todo-view" 
+                                    data-toggle="modal" data-target="#todoModal" data-original-title='Modify'>
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'dashboard:todo-update' todo.id %}" class="btn-sm btn btn-info btn-success-space todo-form" 
+                                    data-toggle="modal" data-target="#todoModal" data-original-title='Modify' data-sid="{{ todo.id }}">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                    {% if request.user.is_superuser %}
+                                    <a href="{% url 'dashboard:todo-delete' todo.id %}" class="btn-sm btn btn-danger delete-link" data-toggle="tooltip" data-original-title='Delete' >
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                {% include 'dashboard/base/pagination.html' %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+<input type="text" class="form-control datetimepicker">
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        
+      </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block script %}
+<script>
+    $('.todo-form').click( function(e){
+        e.preventDefault();
+        $("#todoModal").modal("show");
+        var url = $(this).attr("href");
+        var id = $(this).attr('data-sid');
+        $.get(url,function (data){
+        $("#todoModal .modal-content").empty().append(data);
+        $('#todoModal #task_form_id').val(id);
+        })
+    
+    })
+    $('.todo-view').click( function(e){
+        e.preventDefault();
+        $("#todoModal").modal("show");
+        var url = $(this).attr("href");
+        $.get(url,function (data){
+        $("#todoModal .modal-content").empty().append(data)
+        })
+    })
+    $('.complete').click(function(){
+        var id = $(this).attr('todo-id');
+        var url = $(this).attr('action-link')
+        alert(url)
+
+        $.ajax({
+            url : url,
+            method : "GET",
+            data : {
+                'complete_id' : id
+            },
+            success : function(data){
+                console.log('success')
+                $(this).parents("tr").animate({ backgroundColor: "#003" }, "slow")
+                            .animate({ opacity: "hide" }, "slow");
+            }
+            
+        })
+    })
+  setTimeout(function() {
+        $(".inlinecalendar").flatpickr({
+            dateFormat: "Y-m-d H:i",
+            enableTime: true,
+            allowInput: true,
+            minDate:"today",
+        })
+    }, 3500)
+</script>
+{% endblock %}

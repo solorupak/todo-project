@@ -43,4 +43,17 @@ urlpatterns = [
     path('users/<int:pk>/password-reset',
          views.UserPasswordResetView.as_view(), name='users-password-reset'),
 
+    # todo crud
+    path('todo/', views.TodoListView.as_view(), name='todo-list'),
+    path('todo/create/', views.TodoCreateView.as_view(), name='todo-create'),
+    path('todo/<int:pk>/update/',
+         views.TodoUpdateView.as_view(), name='todo-update'),
+    path('todo/<int:pk>/detail/',
+         views.TodoDetailView.as_view(), name='todo-detail'),
+    path('todo/<int:pk>/delete/', views.TodoDeleteView.as_view(), name='todo-delete'),
+    path('todo/<int:pk>/manage/', views.ManageTask.as_view(), name='todo-manage'),
+    path('todo/completed/', views.CompletedTaskListView.as_view(),
+         name='completed-todo-list'),
+
+
 ]

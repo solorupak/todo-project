@@ -72,7 +72,35 @@
                             </a>
                         </li>
                         {% endif %}
-
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#todo_menu">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">work</i>
+                                <span class="sidebar-menu-text">Todo</span>
+                                <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="todo_menu">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="{% url 'dashboard:todo-list' %}">
+                                        <span class="sidebar-menu-text">Active Task</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="">
+                                        <span class="sidebar-menu-text">Important</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="{% url 'dashboard:completed-todo-list' %}">
+                                        <span class="sidebar-menu-text">Completed</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="">
+                                        <span class="sidebar-menu-text">Missed</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                        
                         <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" data-toggle="collapse" href="#employee_menu">

@@ -1,0 +1,73 @@
+{% extends "dashboard/base/index.html" %}
+
+{% load static %}
+
+{% block title %}Todo{% endblock %}
+
+{% block subtitle %}Todo{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid page__container">
+    <div class="card document-card">
+        <div class="row mb-4 mt-4 mr-2">
+            <div class="col-md-12">
+                <div style="text-align: center">
+                    <h3>Completed Task</h3>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row ml-2 mr-2 mb-2 mt-2">
+            <div class="col-sm-12 document-table-space">
+                <div >
+                    {% for completed in object_list %}
+                    <div class="row m-2 shadow p-3 bg-white rounded">
+                        <div class="col-md-2 col-sm-1">
+                            <span>{{ page_obj.start_index|add:forloop.counter0 }}</span>
+                        </div>
+                        <div class="col-md-4 col-sm-3">
+                            <a href="{% url 'dashboard:todo-detail' completed.id %}" class="todo-view"
+                            data-toggle="modal" data-target="#todoModal" data-original-title='Modify'>{{ completed.title }}</a>
+                        </div>
+                        <div class="col-md-4 col-sm-3">
+                            <a href="{% url 'dashboard:todo-delete' completed.id %}" class="btn-sm btn btn-danger delete-link float-right" data-toggle="tooltip" data-original-title='Delete' >
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                        {% endfor %}
+                  </div>
+                {% include 'dashboard/base/pagination.html' %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+{% block modal %}
+<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        
+      </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block script %}
+<script>
+    $('.todo-view').click( function(e){
+        e.preventDefault();
+        $("#todoModal").modal("show");
+        var url = $(this).attr("href");
+        $.get(url,function (data){
+        $("#todoModal .modal-content").empty().append(data)
+        })
+    })
+</script>
+{% endblock %}
