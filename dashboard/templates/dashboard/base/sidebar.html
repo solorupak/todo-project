@@ -85,18 +85,18 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href="">
-                                        <span class="sidebar-menu-text">Important</span>
+                                    <a class="sidebar-menu-button" href="{% url 'dashboard:important-todo-list' %}">
+                                        <span class="sidebar-menu-text">Important Task</span>
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
                                     <a class="sidebar-menu-button" href="{% url 'dashboard:completed-todo-list' %}">
-                                        <span class="sidebar-menu-text">Completed</span>
+                                        <span class="sidebar-menu-text">Completed Task</span>
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href="">
-                                        <span class="sidebar-menu-text">Missed</span>
+                                    <a class="sidebar-menu-button" href="{% url 'dashboard:missed-todo-list' %}">
+                                        <span class="sidebar-menu-text">Missed Task</span>
                                     </a>
                                 </li>
                             </ul>

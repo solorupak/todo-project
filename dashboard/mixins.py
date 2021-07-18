@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
@@ -76,3 +76,8 @@ class GroupRequiredMixin(object):
         if request.user.is_superuser or self.request.user.groups.filter(name__in=self.group_required).exists():
             return super().dispatch(request, *args, **kwargs)
         raise PermissionDenied
+
+
+class UserRelatedListMixin:
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)

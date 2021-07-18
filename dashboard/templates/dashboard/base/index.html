@@ -349,7 +349,60 @@
 		});
 
     </script>
-
+    <!-- script for todo  -->
+    <script>
+        $('.todo-form').click( function(e){
+            e.preventDefault();
+            $("#todoModal").modal("show");
+            var url = $(this).attr("href");
+            var id = $(this).attr('data-sid');
+            setTimeout(function() {
+                $(".inlinecalendar").flatpickr({
+                    dateFormat: "Y-m-d H:i",
+                    enableTime: true,
+                    allowInput: true,
+                    minDate:"today",
+                })
+                $('.inlinecalendar').keypress(function(event) {
+                    event.preventDefault();
+                    return false;
+                });
+            }, 500)
+            $.get(url,function (data){
+            $("#todoModal .modal-content").empty().append(data);
+            $('#todoModal #task_form_id').val(id);
+            })
+        
+        })
+        $('.todo-view').click( function(e){
+            e.preventDefault();
+            $("#todoModal").modal("show");
+            var url = $(this).attr("href");
+            $.get(url,function (data){
+            $("#todoModal .modal-content").empty().append(data)
+            })
+        })
+        $('.complete').click(function(){
+            var id = $(this).attr('todo-id');
+            var url = $(this).attr('action-link')
+            var $tr = $(this).closest('tr');
+            $.ajax({
+                url : url,
+                method : "GET",
+                data : {
+                    'complete_id' : id
+                },
+                success : function(data){
+                    console.log('success')
+                    $tr.find('td').fadeOut(1000,function(){ 
+                                $tr.remove();                    
+                            });
+                }
+                
+            })
+        })
+    </script>
+    
 
 
     {% block script %}
