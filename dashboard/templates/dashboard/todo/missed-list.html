@@ -20,7 +20,7 @@
         <div class="row mb-4 mt-4 mr-2">
             <div class="col-md-12">
                 <div style="text-align: center">
-                    <h5>Completed Task</h5>
+                    <h5>Missed Task</h5>
                 </div>
             </div>
         </div>
@@ -50,7 +50,6 @@
                                 <th>Title</th>
                                 <th>Created At</th>
                                 <th>Last Date</th>
-                                <th>Completed at</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -58,18 +57,18 @@
                             {% for todo in object_list %}
                             <tr>
                                 <td>
-                                    <a href="" class = "complete" action-link="{% url 'dashboard:todo-manage' todo.id %}?kw=incomplete">
-                                        <span class="mr-2" data-toggle="tooltip" data-original-title="Complete"><i><input type="checkbox" ></i></span>
-                                    </a>
                                     {{ page_obj.start_index|add:forloop.counter0 }}
                                 </td>
                                 <td>{{ todo.title }}</td>
                                 <td>{{ todo.created_at }}</td>
                                 <td>{{ todo.last_date|date:"M d" }}, {{todo.last_date|date:"Y"}}, {{ todo.last_date|time:"H:i a"}}</td>
-                                <td>{{ todo.completed_at|date:"M d" }}, {{todo.completed_at|date:"Y"}}, {{ todo.completed_at|time:"H:i a"}}</td>
+
                                 <td>
                                     <div class="btn-group" role="group" style="margin:auto;">
-                                        
+                                        <a href="#" class="btn-sm btn btn-info btn-success-space" 
+                                        data-toggle="tooltip" {% if todo.is_important %} data-original-title=' Important' {% else %} data-original-title='Not Important'{% endif %}>
+                                            <i class="fa fa-star" {% if todo.is_important %}  style="color:yellow" {% endif %}></i>
+                                        </a>
                                         <a href="{% url 'dashboard:todo-detail' todo.id %}" class="btn-sm btn btn-info btn-success-space todo-view" 
                                         data-toggle="modal " data-target="#todoModal" >
                                             <i class="fa fa-eye" data-toggle="tooltip" data-original-title='Detail'></i>
@@ -88,14 +87,11 @@
                 </div>
             </div>
             <div id="list" class="row ml-2 mr-2 mb-2 mt-2 tab-pane fade">
-                <div class="col-sm-12 document-table-space">
+                <div class="col-sm-12 document-table-space mb-4">
                     <div>
                         {% for todo in object_list %}
                         <div class="row m-2 shadow p-3 bg-white rounded">
                             <div class="col-md-1 col-sm-1">
-                                <a href="" class = "complete" action-link="{% url 'dashboard:todo-manage' todo.id %}?kw=incomplete">
-                                    <span class="mr-2" data-toggle="tooltip" data-original-title="Complete"><i><input type="checkbox" ></i></span>
-                                </a>
                                 <span>{{ page_obj.start_index|add:forloop.counter0 }}</span>
                             </div>
                             <div class="col-md-4 col-sm-3">
@@ -103,10 +99,14 @@
                                 data-toggle="modal" data-target="#todoModal" data-original-title='Modify'>{{ todo.title }}</a>
                             </div>
                             <div class="col-md-4">
-                                <span>completion time: {{ todo.completed_at|date:"M d" }}, {{todo.completed_at|date:"Y"}}, {{ todo.completed_at|time:"H:i a"}}</span>
+                                <span>last date: {{ todo.last_date|date:"M d" }}, {{todo.last_date|date:"Y"}}, {{ todo.last_date|time:"H:i a"}}</span>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="float-right">
+                                    <a href="#" class="btn-sm btn btn-info btn-success-space" 
+                                    data-toggle="tooltip" {% if todo.is_important %} data-original-title=' Important' {% else %} data-original-title='Not Important'{% endif %}>
+                                        <i class="fa fa-star" {% if todo.is_important %}  style="color:yellow" {% endif %}></i>
+                                    </a>
                                     <a href="{% url 'dashboard:todo-detail' todo.id %}" class="btn-sm btn btn-info btn-success-space todo-view" 
                                     data-toggle="modal " data-target="#todoModal" >
                                         <i class="fa fa-eye" data-toggle="tooltip" data-original-title='Detail'></i>

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash, get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import query
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse, reverse_lazy
@@ -32,7 +32,8 @@ from .mixins import (
     NonDeletedListMixin,
     NonLoginRequiredMixin,
     NonSuperAdminRequiredMixin,
-    SuperAdminRequiredMixin
+    SuperAdminRequiredMixin,
+    UserRelatedListMixin
 )
 from audit.mixins import AuditCreateMixin, AuditDeleteMixin, AuditUpdateMixin
 from audit.models import AuditTrail
@@ -266,25 +267,27 @@ class AuditTrailListView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, List
 # todo list
 
 
-class TodoListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListView):
+class TodoListView(CustomLoginRequiredMixin, NonDeletedListMixin, UserRelatedListMixin, ListView):
     model = Task
     template_name = 'dashboard/todo/list.html'
     paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_completed=False)
-        return queryset.order_by('-created_at')
+        queryset = queryset.filter(is_completed=False, is_missed=False)
+        return queryset.order_by('last_date')
 
     def post(self, request, *args, **kwargs):
         id = request.POST.get('id')
+        user = request.user
+        user = User.objects.get(username=user)
         title = request.POST.get('title')
         if not title:
             title = "Untitled"
         description = request.POST.get('description')
         last_date = request.POST.get('last_date')
         important = request.POST.get('is_important')
-        if important == 'on':
+        if important == 'true':
             important = True
         else:
             important = False
@@ -299,9 +302,43 @@ class TodoListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListView):
             messages.success(request, "Task edited!!!")
         else:
             obj = Task.objects.create(
-                title=title, description=description, last_date=last_date, is_important=important)
+                title=title, description=description, last_date=last_date, is_important=important, user=user)
             messages.success(request, "Task added successfully")
         return redirect('dashboard:todo-list')
+
+
+class CompletedTaskListView(CustomLoginRequiredMixin, NonDeletedListMixin, UserRelatedListMixin, ListView):
+    template_name = 'dashboard/todo/completed-list.html'
+    model = Task
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_completed=True)
+        return queryset
+
+
+class ImportantTaskListView(CustomLoginRequiredMixin, NonDeletedListMixin, UserRelatedListMixin, ListView):
+    template_name = 'dashboard/todo/important-list.html'
+    model = Task
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            is_important=True, is_completed=False, is_missed=False)
+        return queryset
+
+
+class MissedTaskListView(CustomLoginRequiredMixin, NonDeletedListMixin, UserRelatedListMixin, ListView):
+    template_name = 'dashboard/todo/missed-list.html'
+    model = Task
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_missed=True)
+        return queryset
 
 
 class TodoCreateView(CustomLoginRequiredMixin, CreateView):
@@ -329,7 +366,7 @@ class TodoDetailView(CustomLoginRequiredMixin, DetailView):
         return obj
 
 
-class TodoDeleteView(CustomLoginRequiredMixin, SuperAdminRequiredMixin, GetDeleteMixin, DeleteView):
+class TodoDeleteView(CustomLoginRequiredMixin, GetDeleteMixin, DeleteView):
     model = Task
     success_message = "Task Deleted Successfully"
     success_url = reverse_lazy('dashboard:todo-list')
@@ -353,18 +390,12 @@ class ManageTask(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
         if kw == 'completed':
             if obj.is_completed == False:
                 obj.is_completed = True
-                obj.save(update_fields=['is_completed'])
-                messages.success(request, 'Marked as completed !!!')
+                obj.completed_at = timezone.now()
+                obj.save(update_fields=['is_completed', 'completed_at'])
+        if kw == 'incomplete':
+            if obj.is_completed == True:
+                obj.is_completed = False
+                obj.completed_at = None
+                obj.save(update_fields=['is_completed', 'completed_at'])
 
         return redirect('dashboard:todo-list')
-
-
-class CompletedTaskListView(CustomLoginRequiredMixin, NonDeletedListMixin, ListView):
-    template_name = 'dashboard/todo/completed-list.html'
-    model = Task
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(is_completed=True)
-        return queryset

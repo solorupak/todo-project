@@ -160,21 +160,10 @@ class TodoForm(FormControlMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['last_date'].widget.attrs.update({
-            'class': 'form-control inlinecalendar flatpickr-input active'
+            'class': 'form-control inlinecalendar',
         })
         self.fields['description'].widget.attrs.update({
             'rows': '4'
         })
         self.fields['is_important'].widget.attrs.update({
-            'class': 'onoffswitch'
         })
-
-    def clean(self):
-        title = self.cleaned_data.get('title')
-        description = self.cleaned_data.get('description')
-
-        if not title and not description:
-            raise forms.ValidationError({
-                'title': 'Title and description both can not be empty.'
-            })
-        return self.cleaned_data

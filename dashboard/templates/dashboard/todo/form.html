@@ -5,21 +5,39 @@
     </button>
 </div>
 <div class="modal-body">
-    <form method="POST">
+    <form method="POST" id="task-form">
         {% csrf_token %}
         <div>
             <input type="hidden" id='task_form_id' name="id" value="">
         </div>
+        <p id="error-p" style="color:red;"></p>
         {% for field in form %}
             <div class="form-group" >
                 <label>{{ field.label }}{% if field.field.required %}* {% endif %}</label>
                 {{ field }}
-                <span style="color:red;">{{ field.errors|striptags|safe }}</span>
             </div>
         {% endfor %}
         <div class="float-right">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary" id="">Save changes</button>
         </div>
       </form>
 </div>
+
+
+<script>
+    var task_form = document.getElementById("task-form")
+    task_form.addEventListener("submit", function(e){
+        e.preventDefault()
+        var title = document.getElementById("id_title").value
+        var description = document.getElementById("id_description").value
+        console.log(title, description)
+        if(title == '' && description == ''){
+            document.getElementById("error-p").innerHTML = "* You can not leave both field blank"
+        }else{
+            document.getElementById("error-p").innerHTML = ""
+            task_form.submit()
+        }
+        // vayo?
+    })
+</script>
