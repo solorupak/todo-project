@@ -396,6 +396,9 @@ class ManageTask(CustomLoginRequiredMixin, SuperAdminRequiredMixin, View):
             if obj.is_completed == True:
                 obj.is_completed = False
                 obj.completed_at = None
-                obj.save(update_fields=['is_completed', 'completed_at'])
+                if obj.last_date < timezone.now():
+                    obj.is_missed = True
+                obj.save(update_fields=['is_completed',
+                         'completed_at', 'is_missed'])
 
         return redirect('dashboard:todo-list')
